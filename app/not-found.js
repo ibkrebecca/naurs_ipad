@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import notFound from "@/public/images/not_found.png";
+import notFound from "@/public/images/not_found.svg";
 
 const NotFound = () => (
   <div className="container d-flex justify-content-center align-items-center vh-100">
