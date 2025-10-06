@@ -93,24 +93,22 @@ const Hero = () => {
         <div className="embla__container">
           {slides.map((slide, i) => (
             <div className="embla__slide" key={i}>
-              {slide.video !== null ? (
+              {slide.video !== null && (
                 <video
                   src={slide.video}
                   muted
                   loop
                   autoPlay
                   playsInline
-                  className="embla__slide__video"
-                />
-              ) : (
-                // <div className="embla__slide__number">{slide.title}</div>
-                <img
-                  src={slide.image}
-                  alt={slide.title}
-                  priority
-                  className="embla__slide__image"
+                  className="embla__slide__video z-999"
                 />
               )}
+
+              <img
+                src={slide.image}
+                alt={slide.title}
+                className="embla__slide__image"
+              />
             </div>
           ))}
         </div>
