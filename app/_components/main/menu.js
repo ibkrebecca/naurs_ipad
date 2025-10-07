@@ -120,7 +120,9 @@ const Menu = () => {
               alt="icon"
               className="me-2"
             />
-            <Link href="/pricing">Pricing</Link>
+            <Link href="#" onClick={(e) => {}}>
+              Pricing
+            </Link>
           </div>
 
           <div className="menu-nav-home">
