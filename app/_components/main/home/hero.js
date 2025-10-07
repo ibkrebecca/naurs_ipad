@@ -11,6 +11,7 @@ import logo from "@/public/logos/logo.png";
 import Image from "next/image";
 import { useState } from "react";
 import { useEffect } from "react";
+import Link from "next/link";
 
 const options = { loop: true };
 const slides = [
@@ -28,7 +29,7 @@ const slides = [
     title: "Piano, Guitar, Drums & Violin",
     price: "425",
     category: "kids",
-    subcategory: "fineArt",
+    subcategory: "fine_art",
   },
   {
     image: "/images/3.png",
@@ -91,11 +92,11 @@ const Hero = () => {
     <section className="embla">
       <div className="embla__viewport" ref={emblaRef}>
         <div className="embla__container">
-          {slides.map((slide, i) => (
+          {slides.map((s, i) => (
             <div className="embla__slide" key={i}>
-              {slide.video !== null && (
+              {s.video !== null && (
                 <video
-                  src={slide.video}
+                  src={s.video}
                   muted
                   loop
                   autoPlay
@@ -105,8 +106,8 @@ const Hero = () => {
               )}
 
               <img
-                src={slide.image}
-                alt={slide.title}
+                src={s.image}
+                alt={s.title}
                 className="embla__slide__image"
               />
             </div>
@@ -138,13 +139,18 @@ const Hero = () => {
       </div>
 
       <div className="hero_footer">
-        <div>
-          <div />
-        </div>
+        <Link
+          href={`/menu#${onGetSlide(slide).subcategory}`}
+          className="d-flex flex-column align-items-center text-white text-center text-decoration-none"
+        >
+          <div>
+            <div />
+          </div>
 
-        <p>
-          Open <b>FITNESS</b> menu
-        </p>
+          <p>
+            Open <b>FITNESS</b> menu
+          </p>
+        </Link>
       </div>
     </section>
   );
