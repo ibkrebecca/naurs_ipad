@@ -367,9 +367,9 @@ input[type="file"]::file-selector-button {
   cursor: pointer;
 }
 
-.modal-95w {
+.modal-85w {
   max-width: none !important;
-  width: 95%;
+  width: 85%;
 }
 
 .form-check-input:checked {
@@ -692,7 +692,7 @@ p {
 
 .modal-header {
   border: none;
-  padding: 20px;
+  /* padding: 20px; */
 }
 
 .z-9 {
@@ -889,7 +889,7 @@ b {
 
 .menu-nav {
   position: fixed;
-  z-index: 99999;
+  z-index: 99;
   top: 0;
   width: 100%;
   display: flex;

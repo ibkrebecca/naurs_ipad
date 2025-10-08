@@ -5,6 +5,7 @@ import discount from "@/public/icons/discount.png";
 import home from "@/public/icons/home.png";
 import Image from "next/image";
 import { useState } from "react";
+import Pricing from "@/app/_components/main/pricing";
 
 const allClasses = [
   {
@@ -59,6 +60,7 @@ const allClasses = [
 
 const Menu = () => {
   const [selected, setSelected] = useState("gravity");
+  const [openPricing, setOpenPricing] = useState(false);
 
   const isSelected = (key) => selected === key;
 
@@ -77,154 +79,163 @@ const Menu = () => {
   };
 
   return (
-    <main className="mvh-100">
-      <nav className="menu-nav">
-        <ul className="list-unstyled menu-nav-pages me-3">
-          <li className={isSelected("gravity") ? "bg-black" : "transparent"}>
-            <Link
-              href="#"
-              onClick={(e) => handleScroll(e, "gravity")}
-              className={isSelected("gravity") ? "text-white" : "text-black"}
-            >
-              Adult Fitness
-            </Link>
-          </li>
+    <>
+      <main className="mvh-100">
+        <nav className="menu-nav">
+          <ul className="list-unstyled menu-nav-pages me-3">
+            <li className={isSelected("gravity") ? "bg-black" : "transparent"}>
+              <Link
+                href="#"
+                onClick={(e) => handleScroll(e, "gravity")}
+                className={isSelected("gravity") ? "text-white" : "text-black"}
+              >
+                Adult Fitness
+              </Link>
+            </li>
 
-          <li className={isSelected("fine_art") ? "bg-black" : "transparent"}>
-            <Link
-              href="#"
-              onClick={(e) => handleScroll(e, "fine_art")}
-              className={isSelected("fine_art") ? "text-white" : "text-black"}
-            >
-              Kids Fine Art
-            </Link>
-          </li>
+            <li className={isSelected("fine_art") ? "bg-black" : "transparent"}>
+              <Link
+                href="#"
+                onClick={(e) => handleScroll(e, "fine_art")}
+                className={isSelected("fine_art") ? "text-white" : "text-black"}
+              >
+                Kids Fine Art
+              </Link>
+            </li>
 
-          <li className={isSelected("fitness") ? "bg-black" : "transparent"}>
-            <Link
-              href="#"
-              onClick={(e) => handleScroll(e, "fitness")}
-              className={isSelected("fitness") ? "text-white" : "text-black"}
-            >
-              Kids Fitness
-            </Link>
-          </li>
-        </ul>
+            <li className={isSelected("fitness") ? "bg-black" : "transparent"}>
+              <Link
+                href="#"
+                onClick={(e) => handleScroll(e, "fitness")}
+                className={isSelected("fitness") ? "text-white" : "text-black"}
+              >
+                Kids Fitness
+              </Link>
+            </li>
+          </ul>
 
-        <div className="menu-nav-pricing-home">
-          <div className="menu-nav-pricing me-4">
-            <Image
-              src={discount}
-              width={28}
-              priority
-              alt="icon"
-              className="me-2"
-            />
-            <Link href="#" onClick={(e) => {}}>
-              Pricing
-            </Link>
+          <div className="menu-nav-pricing-home">
+            <div className="menu-nav-pricing me-4">
+              <Image
+                src={discount}
+                width={28}
+                priority
+                alt="icon"
+                className="me-2"
+              />
+              <Link href="#" onClick={() => setOpenPricing(true)}>
+                Pricing
+              </Link>
+            </div>
+
+            <div className="menu-nav-home">
+              <Link href="/" scroll={false}>
+                <Image src={home} width={28} priority alt="home" />
+              </Link>
+            </div>
           </div>
+        </nav>
 
-          <div className="menu-nav-home">
-            <Link href="/" scroll={false}>
-              <Image src={home} width={28} priority alt="home" />
-            </Link>
-          </div>
-        </div>
-      </nav>
+        <div className="menu-divider" />
 
-      <div className="menu-divider" />
+        <section className="container-fluid">
+          <div id="gravity" className="row mb-5">
+            <div className="col-12 mb-3">
+              <h3 className="font-32">
+                Adult Fitness <span className="pink">(Gravity Classes)</span>
+              </h3>
+            </div>
 
-      <section className="container-fluid">
-        <div id="gravity" className="row mb-5">
-          <div className="col-12 mb-3">
-            <h3 className="font-32">
-              Adult Fitness <span className="pink">(Gravity Classes)</span>
-            </h3>
-          </div>
+            {allClasses
+              .filter((c) => c.subcategory === "gravity")
+              .map((c, i) => (
+                <div key={i} className="col-sm-4">
+                  <div className="class-card">
+                    <img className="class-card-img" src={c.image} />
 
-          {allClasses
-            .filter((c) => c.subcategory === "gravity")
-            .map((c, i) => (
-              <div key={i} className="col-sm-4">
-                <div className="class-card">
-                  <img className="class-card-img" src={c.image} />
-
-                  <div className="class-card-body text-white">
-                    <h3 className="text-white font-20">{c.title}</h3>
-                    <p className="text-white font-16">{c.calendar}</p>
+                    <div className="class-card-body text-white">
+                      <h3 className="text-white font-20">{c.title}</h3>
+                      <p className="text-white font-16">{c.calendar}</p>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
-        </div>
-
-        <div id="sky" className="row mb-5">
-          <div className="col-12 mb-3">
-            <h3 className="font-32">
-              Adult Fitness <span className="pink">(Sky Classes)</span>
-            </h3>
+              ))}
           </div>
 
-          {allClasses
-            .filter((c) => c.subcategory === "sky")
-            .map((c, i) => (
-              <div key={i} className="col-sm-4">
-                <div className="class-card">
-                  <img className="class-card-img" src={c.image} />
+          <div id="sky" className="row mb-5">
+            <div className="col-12 mb-3">
+              <h3 className="font-32">
+                Adult Fitness <span className="pink">(Sky Classes)</span>
+              </h3>
+            </div>
 
-                  <div className="class-card-body text-white">
-                    <h3 className="text-white font-20">{c.title}</h3>
-                    <p className="text-white font-16">{c.calendar}</p>
+            {allClasses
+              .filter((c) => c.subcategory === "sky")
+              .map((c, i) => (
+                <div key={i} className="col-sm-4">
+                  <div className="class-card">
+                    <img className="class-card-img" src={c.image} />
+
+                    <div className="class-card-body text-white">
+                      <h3 className="text-white font-20">{c.title}</h3>
+                      <p className="text-white font-16">{c.calendar}</p>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
-        </div>
-
-        <div id="fine_art" className="row mb-5">
-          <div className="col-12 mb-3">
-            <h3 className="font-32">Kids Fine Art Classes</h3>
+              ))}
           </div>
 
-          {allClasses
-            .filter((c) => c.subcategory === "fine_art")
-            .map((c, i) => (
-              <div key={i} className="col-sm-4">
-                <div className="class-card">
-                  <img className="class-card-img" src={c.image} />
+          <div id="fine_art" className="row mb-5">
+            <div className="col-12 mb-3">
+              <h3 className="font-32">Kids Fine Art Classes</h3>
+            </div>
 
-                  <div className="class-card-body text-white">
-                    <h3 className="text-white font-20">{c.title}</h3>
-                    <p className="text-white font-16">{c.calendar}</p>
+            {allClasses
+              .filter((c) => c.subcategory === "fine_art")
+              .map((c, i) => (
+                <div key={i} className="col-sm-4">
+                  <div className="class-card">
+                    <img className="class-card-img" src={c.image} />
+
+                    <div className="class-card-body text-white">
+                      <h3 className="text-white font-20">{c.title}</h3>
+                      <p className="text-white font-16">{c.calendar}</p>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
-        </div>
-
-        <div id="fitness" className="row mb-5">
-          <div className="col-12 mb-3">
-            <h3 className="font-32">Kids Fitness Classes</h3>
+              ))}
           </div>
 
-          {allClasses
-            .filter((c) => c.subcategory === "fitness")
-            .map((c, i) => (
-              <div key={i} className="col-sm-4">
-                <div className="class-card">
-                  <img className="class-card-img" src={c.image} />
+          <div id="fitness" className="row mb-5">
+            <div className="col-12 mb-3">
+              <h3 className="font-32">Kids Fitness Classes</h3>
+            </div>
 
-                  <div className="class-card-body text-white">
-                    <h3 className="text-white font-20">{c.title}</h3>
-                    <p className="text-white font-16">{c.calendar}</p>
+            {allClasses
+              .filter((c) => c.subcategory === "fitness")
+              .map((c, i) => (
+                <div key={i} className="col-sm-4">
+                  <div className="class-card">
+                    <img className="class-card-img" src={c.image} />
+
+                    <div className="class-card-body text-white">
+                      <h3 className="text-white font-20">{c.title}</h3>
+                      <p className="text-white font-16">{c.calendar}</p>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
-        </div>
-      </section>
-    </main>
+              ))}
+          </div>
+        </section>
+      </main>
+
+      {openPricing && (
+        <Pricing
+          openPricing={openPricing}
+          onHide={() => setOpenPricing(null)}
+        />
+      )}
+    </>
   );
 };
 
