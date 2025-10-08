@@ -20,7 +20,7 @@ const Pricing = ({ openPricing, onHide }) => {
       show={show}
       onHide={handleClose}
     >
-      <Modal.Header className="bg-F1F1 text-center" closeButton>
+      <Modal.Header className="bg-F1F1" closeButton>
         <Modal.Title>
           <h1>Pricing</h1>
         </Modal.Title>

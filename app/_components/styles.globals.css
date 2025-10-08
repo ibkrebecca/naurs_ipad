@@ -983,3 +983,9 @@ b {
   backdrop-filter: blur(1px);
   padding: 16px;
 }
+
+.modal-header .btn-close {
+  border: 1px solid red;
+  border-radius: 50%;
+  padding: 12px;
+}
