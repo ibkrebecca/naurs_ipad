@@ -143,8 +143,8 @@
 .btn-dark:hover,
 .cus-outline-dark:hover,
 .btn-close:focus {
-  border: 1px solid #d0d5dd;
-  box-shadow: 0px 0px 0px 3px #f1f1f1, 0px 1px 2px 0px rgba(0, 0, 0, 0.05);
+  border: 1px solid red;
+  box-shadow: 0px 0px 0px 3px red, 0px 1px 2px 0px rgba(0, 0, 0, 0.05);
 }
 
 .btn-success:hover,
@@ -686,13 +686,13 @@ p {
 }
 
 .modal-content {
-  border-radius: 32px;
+  border-radius: 42px;
   border: none;
 }
 
 .modal-header {
   border: none;
-  /* padding: 20px; */
+  padding: 20px 30px;
 }
 
 .z-9 {
@@ -900,7 +900,9 @@ b {
 
 .menu-nav-pages,
 .menu-nav-pricing,
-.menu-nav-home {
+.menu-nav-home,
+.view-class-category,
+.view-class-price {
   margin: 0;
   padding: 0;
   display: flex;
@@ -926,8 +928,14 @@ b {
   word-wrap: break-word;
 }
 
-.menu-nav-pricing {
+.menu-nav-pricing,
+.view-class-category,
+.view-class-price {
   padding: 10px 20px;
+}
+
+.view-class-price {
+  width: max-content;
 }
 
 .menu-nav-home {
@@ -985,7 +993,48 @@ b {
 }
 
 .modal-header .btn-close {
-  border: 1px solid black;
+  border: 1px solid red;
   border-radius: 50%;
   padding: 12px;
+  opacity: 1;
+  background: transparent
+    url("data:image/svg+xml,%3csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2016%2016'%20fill='%23ff0000'%3e%3cpath%20d='M.293.293a1%201%200%200%201%201.414%200L8%206.586%2014.293.293a1%201%200%201%201%201.414%201.414L9.414%208l6.293%206.293a1%201%200%200%201-1.414%201.414L8%209.414l-6.293%206.293a1%201%200%200%201-1.414-1.414L6.586%208%20.293%201.707a1%201%200%200%201%200-1.414'/%3e%3c/svg%3e")
+    center / 1em auto no-repeat;
+}
+
+.bg-img {
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.custom-modal-content {
+  background: transparent !important;
+  border: none;
+  border-radius: 42px;
+  overflow: hidden;
+  position: relative;
+}
+
+.modal-bg {
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  height: 80vh;
+  border-radius: 42px;
+  display: flex;
+  flex-direction: column;
+}
+
+.view-class {
+  flex: 1;
+  overflow-y: auto;
+  backdrop-filter: blur(1px);
+  padding-top: 40%;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.5) 20%,
+    white 70%
+  );
 }

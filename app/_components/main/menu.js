@@ -6,6 +6,7 @@ import home from "@/public/icons/home.png";
 import Image from "next/image";
 import { useState } from "react";
 import Pricing from "@/app/_components/main/pricing";
+import ViewClass from "@/app/_components/main/view_class";
 
 const allClasses = [
   {
@@ -60,6 +61,7 @@ const allClasses = [
 
 const Menu = () => {
   const [selected, setSelected] = useState("gravity");
+  const [selectedClass, setSelectedClass] = useState(null);
   const [openPricing, setOpenPricing] = useState(false);
 
   const isSelected = (key) => selected === key;
@@ -149,7 +151,11 @@ const Menu = () => {
             {allClasses
               .filter((c) => c.subcategory === "gravity")
               .map((c, i) => (
-                <div key={i} className="col-sm-4">
+                <div
+                  key={i}
+                  onClick={() => setSelectedClass(c)}
+                  className="pe-active col-sm-4"
+                >
                   <div className="class-card">
                     <img className="class-card-img" src={c.image} />
 
@@ -233,6 +239,13 @@ const Menu = () => {
         <Pricing
           openPricing={openPricing}
           onHide={() => setOpenPricing(null)}
+        />
+      )}
+
+      {selectedClass && (
+        <ViewClass
+          selectedClass={selectedClass}
+          onHide={() => setSelectedClass(null)}
         />
       )}
     </>

@@ -16,7 +16,6 @@ const Pricing = ({ openPricing, onHide }) => {
       dialogClassName="modal-85w"
       scrollable
       centered
-      size="xl"
       show={show}
       onHide={handleClose}
     >
