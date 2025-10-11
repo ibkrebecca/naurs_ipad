@@ -58,7 +58,7 @@ const Signin = () => {
                 expires: 14,
               });
               toast.dark("Welcome admin");
-              router.push("/");
+              router.push("/admin");
             } else
               toast.error("Customers does not exist or has no access", {
                 className: "text-danger",
