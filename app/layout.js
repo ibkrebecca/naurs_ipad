@@ -15,7 +15,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Inter } from "next/font/google";
 import "react-phone-number-input/style.css";
-// import { AuthProvider } from "@/app/_components/backend/auth_context";
+import { AuthProvider } from "@/app/_components/backend/auth_context";
 
 const inter = Inter({ variable: "--font-inter", subsets: ["latin"] });
 
@@ -93,7 +93,7 @@ const lBSchema = getLBSchema(
 // root layout
 const RootLayout = ({ children }) => {
   return (
-    // <AuthProvider>
+    <AuthProvider>
       <html lang="en">
         <head>
           <meta property="og:site_name" content={title} />
@@ -119,7 +119,7 @@ const RootLayout = ({ children }) => {
           <ToastContainer position="bottom-center" autoClose={3000} />
         </body>
       </html>
-    // </AuthProvider>
+    </AuthProvider>
   );
 };
 

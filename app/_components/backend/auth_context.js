@@ -6,9 +6,9 @@ import useBackendAuth from "@/app/_components/backend/auth";
 const AuthContext = createContext({
   authUser: null,
   loading: true,
-  signIn: async () => {},
-  signUp: async () => {},
-  logOut: async () => {},
+  signin: async () => {},
+  signup: async () => {},
+  logout: async () => {},
 });
 
 export function AuthProvider({ children }) {

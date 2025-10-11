@@ -17,12 +17,14 @@ const Signin = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { loading, authUser, signIn } = useAuth();
+  const { loading, authUser, signin } = useAuth();
   const router = useRouter();
+
+  console.log("authUser: ", authUser);
 
   if (loading && authUser) return <Loader fullHeight={true} />;
 
-  if (authUser && Cookies.get("AdminMenuSignedIn")) {
+  if (authUser && Cookies.get("AdminNaursSignedIn")) {
     return (
       <div className="d-flex align-items-center vh-100">
         <div className="container">
@@ -49,12 +51,12 @@ const Signin = () => {
     e.preventDefault();
     setIsLoading(true);
 
-    await signIn(email, password)
+    await signin(email, password)
       .then(() => {
         getDoc(doc(db, "admins", email))
           .then(async (doc) => {
             if (doc.exists()) {
-              Cookies.set("AdminMenuSignedIn", true, {
+              Cookies.set("AdminNaursSignedIn", true, {
                 expires: 14,
               });
               toast.dark("Welcome admin");

@@ -41,7 +41,7 @@ const useBackendAuth = () => {
 
   const logout = async () => {
     await signOut(auth).then(clear);
-    Cookies.remove("NaursIpadSignedIn");
+    Cookies.remove("AdminNaursSignedIn");
     toast.dark("User logged out.");
     if (typeof window !== "undefined") window.location = "/";
   };

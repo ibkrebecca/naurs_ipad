@@ -4,7 +4,7 @@ import logo from "@/public/logos/logo.png";
 import Image from "next/image";
 
 const Loader = ({
-  size = 24,
+  size = 50,
   isAwait = false,
   fullHeight = false,
   className = "",
