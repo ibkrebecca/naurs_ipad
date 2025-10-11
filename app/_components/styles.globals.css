@@ -1020,15 +1020,15 @@ b {
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
-  height: 80vh;
+  height: 88vh;
   border-radius: 42px;
   display: flex;
   flex-direction: column;
 }
 
 .view-class {
+  min-height: 100vh;
   flex: 1;
-  overflow-y: auto;
   backdrop-filter: blur(1px);
   padding-top: 40%;
   background: linear-gradient(

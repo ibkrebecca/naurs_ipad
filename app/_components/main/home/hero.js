@@ -94,7 +94,7 @@ const Hero = () => {
         <div className="embla__container">
           {slides.map((s, i) => (
             <div className="embla__slide" key={i}>
-              {s.video !== null && (
+              {s.video && (
                 <video
                   src={s.video}
                   muted

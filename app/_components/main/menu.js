@@ -178,7 +178,11 @@ const Menu = () => {
             {allClasses
               .filter((c) => c.subcategory === "sky")
               .map((c, i) => (
-                <div key={i} className="col-sm-4">
+                <div
+                  key={i}
+                  onClick={() => setSelectedClass(c)}
+                  className="col-sm-4"
+                >
                   <div className="class-card">
                     <img className="class-card-img" src={c.image} />
 
@@ -199,7 +203,11 @@ const Menu = () => {
             {allClasses
               .filter((c) => c.subcategory === "fine_art")
               .map((c, i) => (
-                <div key={i} className="col-sm-4">
+                <div
+                  key={i}
+                  onClick={() => setSelectedClass(c)}
+                  className="col-sm-4"
+                >
                   <div className="class-card">
                     <img className="class-card-img" src={c.image} />
 
@@ -220,7 +228,11 @@ const Menu = () => {
             {allClasses
               .filter((c) => c.subcategory === "fitness")
               .map((c, i) => (
-                <div key={i} className="col-sm-4">
+                <div
+                  key={i}
+                  onClick={() => setSelectedClass(c)}
+                  className="col-sm-4"
+                >
                   <div className="class-card">
                     <img className="class-card-img" src={c.image} />
 

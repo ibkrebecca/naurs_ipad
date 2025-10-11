@@ -16,6 +16,7 @@ const Pricing = ({ openPricing, onHide }) => {
       dialogClassName="modal-85w"
       scrollable
       centered
+      backdrop="static"
       show={show}
       onHide={handleClose}
     >
