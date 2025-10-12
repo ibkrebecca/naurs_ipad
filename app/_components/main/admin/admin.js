@@ -6,7 +6,10 @@ const Admin = () => {
   return (
     <main>
       <Siderbar />
-      {/* <Dashboard /> */}
+
+      <div className="content">
+        <div className="container-fluid"></div>
+      </div>
     </main>
   );
 };

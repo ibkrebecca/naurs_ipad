@@ -35,7 +35,7 @@ const Siderbar = () => {
             scroll
             replace
             href="/"
-            className="fw-bold text-decoration-none text-primary"
+            className="fw-bold text-decoration-none text-black"
           >
             <Image src={logo} width={80} priority alt="logo" />
           </Link>
@@ -48,7 +48,7 @@ const Siderbar = () => {
               replace
               href="/admin"
               className={`sidebar-child-btn justify-content-start ${
-                pathname === "/admin" ? "text-primary" : ""
+                pathname === "/admin" ? "text-black" : ""
               }`}
             >
               <StatusUp
@@ -67,8 +67,8 @@ const Siderbar = () => {
           onClick={logout}
           className="btn btn-lg btn-dark sidebar-user-btn"
         >
-          <Logout color="black" size={24} variant="Bulk" className="me-2" />
-          Sign Out
+          <Logout color="white" size={24} variant="Bulk" className="me-2" />
+          Log Out
         </button>
       )}
     </div>
