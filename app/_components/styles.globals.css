@@ -363,8 +363,84 @@ input[type="file"]::file-selector-button {
   background-color: transparent;
 }
 
+/* dashboard */
+.content {
+  width: calc(100% - 180px);
+  margin-left: 180px;
+}
+
+.dashboard-others {
+  width: 125px !important;
+  height: 125px !important;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-decoration: none;
+}
+
+.dash-body {
+  position: absolute;
+  bottom: 0;
+  z-index: -99;
+  right: 0;
+  width: calc(100% - 180px);
+  height: calc(100vh - 6.5rem);
+  overflow-y: scroll;
+}
+
+.dash-header {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: calc(100% - 180px);
+  background: white;
+}
+
+.search-dash {
+  display: flex;
+  width: 320px;
+  height: 42px;
+  padding: 10px 12px;
+  border-radius: 6px;
+  box-shadow: 0px 1px 2px 0px rgba(16, 24, 40, 0.04);
+}
+
+.search-dash:focus,
+.search-dash:active {
+  background: #fff !important;
+  box-shadow: 0px 5px 6px 0px rgba(16, 24, 40, 0.04) !important;
+}
+
+.search-dash-result {
+  position: absolute;
+  top: 150%;
+  width: 320px;
+  max-height: 500px;
+  overflow-y: scroll;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  z-index: 99;
+}
+
+.search-dash-result::-webkit-scrollbar {
+  display: none;
+}
+
+.thead-dash {
+  height: 52px;
+}
+
+.thead-dash th {
+  vertical-align: middle;
+}
+
 .pe-active {
   cursor: pointer;
+}
+
+.move-active {
+  cursor: move !important;
 }
 
 .modal-85w {
