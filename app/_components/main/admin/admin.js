@@ -6,6 +6,7 @@ import { BookSquare, Category, Category2, Trash } from "iconsax-react";
 import { useEffect, useState } from "react";
 import { db } from "@/app/_components/backend/config";
 import Loader from "@/app/_components/loader";
+import NewClass from "@/app/_components/main/admin/new_class";
 
 const Admin = () => {
   const [totalClasses, setTotalClasses] = useState(0);
@@ -13,6 +14,7 @@ const Admin = () => {
   const [totalSubCategories, setTotalSubCategories] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [classes, setClasses] = useState(null);
+  const [newClass, setNewClass] = useState(false);
 
   useEffect(() => {
     const unsubscribe = onSnapshot(collection(db, "classes"), (snap) => {
@@ -29,6 +31,20 @@ const Admin = () => {
     const unsubscribe = onSnapshot(collection(db, "categories"), (snap) => {
       const total = snap.size;
       setTotalCategories(total);
+
+      if (total > 0) {
+        const totalSubCategories = snap.docs.reduce((sum, doc) => {
+          const data = doc.data();
+          const subCount = Array.isArray(data.subcategories)
+            ? data.subcategories.length
+            : 0;
+          return sum + subCount;
+        }, 0);
+
+        setTotalSubCategories(totalSubCategories);
+      } else {
+        setTotalSubCategories(0);
+      }
     });
 
     return () => unsubscribe();
@@ -90,6 +106,19 @@ const Admin = () => {
                 </div>
               </div>
             </div>
+
+            <div className="col-md-12">
+              <div className="p-3 mb-2 mt-3 rounded-4 shadow-sm d-flex justify-content-between align-items-center">
+                <h4 className="m-0">All Classes</h4>
+
+                <button
+                  className="btn btn-dark"
+                  onClick={() => setNewClass(true)}
+                >
+                  Create Class
+                </button>
+              </div>
+            </div>
           </div>
 
           {/* body */}
@@ -107,6 +136,11 @@ const Admin = () => {
           )}
         </div>
       </div>
+
+      {/* new class */}
+      {newClass && (
+        <NewClass newClass={newClass} onHide={() => setNewClass(null)} />
+      )}
     </main>
   );
 };

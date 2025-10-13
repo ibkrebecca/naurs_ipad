@@ -21,9 +21,7 @@ const Pricing = ({ openPricing, onHide }) => {
       onHide={handleClose}
     >
       <Modal.Header className="bg-F1F1" closeButton>
-        <Modal.Title>
-          <h1>Pricing</h1>
-        </Modal.Title>
+        <Modal.Title className="h1">Pricing</Modal.Title>
       </Modal.Header>
 
       <Modal.Body className="bg-F1F1">
