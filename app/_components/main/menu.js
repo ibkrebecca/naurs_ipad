@@ -148,7 +148,7 @@ const Menu = () => {
 
                         <div className="class-card-body text-white">
                           <h3 className="text-white font-20">
-                            {truncate(capitalize(c.name), 30)}
+                            {truncate(capitalize(c.name), 50)}
                           </h3>
                           <p className="text-white font-16">{c.calendar}</p>
                         </div>
@@ -177,7 +177,7 @@ const Menu = () => {
 
                         <div className="class-card-body text-white">
                           <h3 className="text-white font-20">
-                            {truncate(capitalize(c.name), 30)}
+                            {truncate(capitalize(c.name), 50)}
                           </h3>
                           <p className="text-white font-16">{c.calendar}</p>
                         </div>
@@ -204,7 +204,7 @@ const Menu = () => {
 
                         <div className="class-card-body text-white">
                           <h3 className="text-white font-20">
-                            {truncate(capitalize(c.name), 30)}
+                            {truncate(capitalize(c.name), 50)}
                           </h3>
                           <p className="text-white font-16">{c.calendar}</p>
                         </div>
@@ -231,7 +231,7 @@ const Menu = () => {
 
                         <div className="class-card-body text-white">
                           <h3 className="text-white font-20">
-                            {truncate(capitalize(c.name), 30)}
+                            {truncate(capitalize(c.name), 50)}
                           </h3>
                           <p className="text-white font-16">{c.calendar}</p>
                         </div>
