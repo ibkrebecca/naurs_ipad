@@ -3,13 +3,14 @@
 import Loader from "@/app/_components/loader";
 import { TickSquare, Trash } from "iconsax-react";
 import { Modal } from "react-bootstrap";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { toast } from "react-toastify";
 import imageToGithub from "@/app/_utils/image_to_github";
 import videoToGithub from "@/app/_utils/video_to_github";
 import {
   collection,
+  doc,
   onSnapshot,
   orderBy,
   query,
@@ -23,6 +24,7 @@ import capitalize from "@/app/_utils/capitalize";
 
 const NewClass = ({ newClass, onHide }) => {
   const [show, setShow] = useState(!!newClass);
+  const formRef = useRef();
   const [isLoading, setIsLoading] = useState(false);
   const [rawImage, setRawImage] = useState(null);
   const [viewImage, setViewImage] = useState(null);
@@ -54,7 +56,7 @@ const NewClass = ({ newClass, onHide }) => {
       setIsLoading(true);
       toast.dark("Compressing and uploading Image");
 
-      const classesRef = collection(db, "classes");
+      const classesRef = doc(collection(db, "classes"));
       imageToGithub(rawImage).then((image) => {
         const newClass_ = {
           image: image,
@@ -67,11 +69,17 @@ const NewClass = ({ newClass, onHide }) => {
 
         if (rawVideo) {
           toast.dark("Uploading Video");
-          videoToGithub(rawVideo).then((video) => {
-            newClass_.video = video;
-
-            onDbUpdate(classesRef, newClass_);
-          });
+          videoToGithub(rawVideo)
+            .then((video) => {
+              newClass_.video = video;
+              onDbUpdate(classesRef, newClass_);
+            })
+            .catch((e) => {
+              toast.dark(`Error uploading video: ${e}`, {
+                className: "text-danger",
+              });
+              setIsLoading(false);
+            });
         } else {
           onDbUpdate(classesRef, newClass_);
         }
@@ -81,13 +89,17 @@ const NewClass = ({ newClass, onHide }) => {
 
   const onDbUpdate = (ref, data) => {
     setDoc(ref, data)
-      .then(() => toast.dark("Class added successfully"))
+      .then(() => {
+        formRef.current?.reset();
+        handleClose();
+        toast.dark("Class added successfully");
+      })
       .catch((e) => {
         toast.dark(`Error adding class: ${e}`, {
           className: "text-danger",
         });
       })
-      .finally(() => setIsLoading(flase));
+      .finally(() => setIsLoading(false));
   };
 
   const handleClose = () => {
@@ -96,14 +108,25 @@ const NewClass = ({ newClass, onHide }) => {
   };
 
   return (
-    <Modal scrollable centered show={show} onHide={() => handleClose()}>
+    <Modal
+      scrollable
+      centered
+      backdrop="static"
+      show={show}
+      onHide={() => handleClose()}
+    >
       <Modal.Header closeButton>
         <Modal.Title className="h1">Add Class</Modal.Title>
       </Modal.Header>
 
       <Modal.Body>
         <div className="container-fluid">
-          <form className="row" onSubmit={onNewClass} id="addClass">
+          <form
+            className="row"
+            onSubmit={onNewClass}
+            id="addClass"
+            ref={formRef}
+          >
             <div className="col-md-12">
               <div className="mb-3">
                 <label className="form-label" htmlFor="name">
