@@ -7,6 +7,12 @@ import { useEffect, useState } from "react";
 import { db } from "@/app/_components/backend/config";
 import Loader from "@/app/_components/loader";
 import NewClass from "@/app/_components/main/admin/new_class";
+import { formatTimestamp } from "@/app/_utils/format_timestamp";
+import { truncate } from "@/app/_utils/truncate";
+import capitalize from "@/app/_utils/capitalize";
+import Image from "next/image";
+import Link from "next/link";
+import EditClass from "@/app/_components/main/admin/edit_class";
 
 const Admin = () => {
   const [totalClasses, setTotalClasses] = useState(0);
@@ -15,6 +21,7 @@ const Admin = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [classes, setClasses] = useState(null);
   const [newClass, setNewClass] = useState(false);
+  const [selectedClass, setSelectedClass] = useState(null);
 
   useEffect(() => {
     const unsubscribe = onSnapshot(collection(db, "classes"), (snap) => {
@@ -65,6 +72,46 @@ const Admin = () => {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const renderTableRow = (c, index) => (
+    <tr key={index} className="pe-active" onClick={() => setSelectedClass(c)}>
+      <td className="align-middle">
+        <div className="d-flex align-items-center">
+          <div className="border rounded-2 me-3 p-1">
+            <Image
+              src={c.image}
+              width={30}
+              height={30}
+              alt="image"
+              priority
+              className="rounded-1 object-fit-cover"
+            />
+          </div>
+          {truncate(capitalize(c.name), 30)}
+        </div>
+      </td>
+      <td className="align-middle">{c.id}</td>
+
+      <td className="align-middle">{c.category.name}</td>
+
+      <td className="align-middle">{c.subcategory.name}</td>
+
+      <td className="align-middle">
+        {c.video ? (
+          <Link
+            href={c.video}
+            className="align-middle btn-dark py-1 px-3 text-decoration-none"
+          >
+            <small className="text-white">View</small>
+          </Link>
+        ) : (
+          <small>No Video</small>
+        )}
+      </td>
+
+      <td className="align-middle">{formatTimestamp(c.createdOn)}</td>
+    </tr>
+  );
 
   return (
     <main>
@@ -134,12 +181,44 @@ const Admin = () => {
               <p className="mt-4 mb-0">No classes yet</p>
             </div>
           )}
+
+          {!isLoading && classes !== null && classes.length > 0 && (
+            <div
+              className="col-md-12 dash-body table-responsive px-4 py-0 pb-5"
+              style={{ top: "18.5rem" }}
+            >
+              <table className="table table-hover">
+                <thead>
+                  <tr className="thead-dash">
+                    <th scope="col">#</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Category</th>
+                    <th scope="col">Sub Category</th>
+                    <th scope="col">Video</th>
+                    <th scope="col">Created On</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  {classes.map((c, index) => renderTableRow(c, index))}
+                </tbody>
+              </table>
+            </div>
+          )}
         </div>
       </div>
 
       {/* new class */}
       {newClass && (
         <NewClass newClass={newClass} onHide={() => setNewClass(null)} />
+      )}
+
+      {/* edit ad */}
+      {selectedClass && (
+        <EditClass
+          selectedClass={selectedClass}
+          onHide={() => setSelectedClass(null)}
+        />
       )}
     </main>
   );

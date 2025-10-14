@@ -15,7 +15,7 @@ const GlobalError = ({ error, reset }) => {
 
             <button
               onClick={() => reset()}
-              className="btn btn-lg btn-dark mt-3 mx-auto d-block"
+              className="btn btn-dark mt-3 mx-auto d-block"
             >
               Try again
             </button>

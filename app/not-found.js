@@ -15,7 +15,7 @@ const NotFound = () => (
 
           <p className="text-muted">This page does not exist</p>
 
-          <Link href="/" className="btn btn-lg btn-dark mt-3">
+          <Link href="/" className="btn btn-dark mt-3">
             Back Home
           </Link>
         </div>

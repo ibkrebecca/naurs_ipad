@@ -135,7 +135,7 @@ const Signin = () => {
             <button
               type="submit"
               disabled={isLoading}
-              className="btn btn-lg btn-dark w-100"
+              className="btn btn-dark w-100"
             >
               {isLoading ? <Loader /> : "Sign In"}
             </button>
