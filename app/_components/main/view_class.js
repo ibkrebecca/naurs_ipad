@@ -81,7 +81,7 @@ const ViewClass = ({ selectedClass, onHide }) => {
                       </div>
 
                       {selectedClass.calendar && (
-                        <p className="pink mt-2">{selectedClass.calendar}</p>
+                        <p className="pink mt-2">{capitalize(selectedClass.calendar)}</p>
                       )}
                     </div>
                   </div>

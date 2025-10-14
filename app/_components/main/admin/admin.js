@@ -95,6 +95,10 @@ const Admin = () => {
       <td className="align-middle">{c.subcategory.name}</td>
 
       <td className="align-middle">
+        <small className="text-muted">{truncate(capitalize(c.calendar ? c.calendar : "No Date"), 15)}</small>
+      </td>
+
+      <td className="align-middle">
         {c.video ? (
           <Link
             href={c.video}
@@ -191,6 +195,7 @@ const Admin = () => {
                     <th scope="col"># Name</th>
                     <th scope="col">Category</th>
                     <th scope="col">Sub Category</th>
+                    <th scope="col">Calendar</th>
                     <th scope="col">Video</th>
                     <th scope="col">Created On</th>
                   </tr>

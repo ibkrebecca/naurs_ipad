@@ -34,6 +34,7 @@ const NewClass = ({ newClass, onHide }) => {
   const [category, setCategory] = useState(null);
   const [subCategory, setSubCategory] = useState(null);
   const [name, setName] = useState("");
+  const [calendar, setCalendar] = useState("");
 
   useEffect(() => {
     const unsubscribe = onSnapshot(
@@ -63,6 +64,7 @@ const NewClass = ({ newClass, onHide }) => {
           image: image,
           video: null,
           name: name,
+          calendar: calendar.length <= 0 ? null : calendar,
           category: category.value,
           subcategory: subCategory.value,
           createdOn: serverTimestamp(),
@@ -141,6 +143,20 @@ const NewClass = ({ newClass, onHide }) => {
                   id="name"
                   placeholder="dance class"
                   onChange={(e) => setName(e.target.value)}
+                />
+              </div>
+
+              <div className="mb-3">
+                <label className="form-label" htmlFor="calendar">
+                  Class Calendar (optional)
+                </label>
+
+                <input
+                  type="text"
+                  className="form-control cus-form-control"
+                  id="calendar"
+                  placeholder="Fri 6:00pm - 7:00pm"
+                  onChange={(e) => setCalendar(e.target.value)}
                 />
               </div>
 

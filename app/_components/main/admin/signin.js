@@ -34,7 +34,7 @@ const Signin = () => {
               <hr />
 
               <div className="d-flex justify-content-center">
-                <Link href="/" className="btn-dash btn-primary w-50">
+                <Link href="/" className="btn btn-dark w-50">
                   Back to menu
                 </Link>
               </div>

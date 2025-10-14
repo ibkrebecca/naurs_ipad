@@ -34,6 +34,7 @@ const EditClass = ({ selectedClass, onHide }) => {
   const [category, setCategory] = useState(selectedClass.category);
   const [subCategory, setSubCategory] = useState(selectedClass.subcategory);
   const [name, setName] = useState("");
+  const [calendar, setCalendar] = useState("");
 
   useEffect(() => {
     const unsubscribe = onSnapshot(
@@ -55,6 +56,7 @@ const EditClass = ({ selectedClass, onHide }) => {
       image: viewImage,
       video: viewVideo,
       name: name.length <= 0 ? selectedClass.name : name,
+      calendar: calendar.length <= 0 ? selectedClass.calendar : calendar,
       category: category?.value || selectedClass.category,
       subcategory: subCategory?.value || selectedClass.subcategory,
     };
@@ -157,6 +159,21 @@ const EditClass = ({ selectedClass, onHide }) => {
                   placeholder={capitalize(selectedClass.name)}
                   defaultValue={capitalize(selectedClass.name)}
                   onChange={(e) => setName(e.target.value)}
+                />
+              </div>
+
+              <div className="mb-3">
+                <label className="form-label" htmlFor="calendar">
+                  Class Calendar (optional)
+                </label>
+
+                <input
+                  type="text"
+                  className="form-control cus-form-control"
+                  id="calendar"
+                  placeholder={capitalize(selectedClass.calendar ?? "")}
+                  defaultValue={capitalize(selectedClass.calendar ?? "")}
+                  onChange={(e) => setCalendar(e.target.value)}
                 />
               </div>
 
