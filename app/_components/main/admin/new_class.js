@@ -59,6 +59,7 @@ const NewClass = ({ newClass, onHide }) => {
       const classesRef = doc(collection(db, "classes"));
       imageToGithub(rawImage).then((image) => {
         const newClass_ = {
+          id: classesRef.id,
           image: image,
           video: null,
           name: name,

@@ -6,11 +6,19 @@ import { CloseSquare, TickSquare, Trash } from "iconsax-react";
 import { Modal } from "react-bootstrap";
 import { useEffect, useRef, useState } from "react";
 import capitalize from "@/app/_utils/capitalize";
-import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  onSnapshot,
+  orderBy,
+  query,
+  updateDoc,
+} from "firebase/firestore";
 import { db } from "@/app/_components/backend/config";
 import ReactSelect from "react-select";
 import { selectFormStyle, selectFormTheme } from "@/app/_utils/input_style";
 import Image from "next/image";
+import { toast } from "react-toastify";
 
 const EditClass = ({ selectedClass, onHide }) => {
   const [show, setShow] = useState(!!selectedClass);
@@ -39,6 +47,56 @@ const EditClass = ({ selectedClass, onHide }) => {
   const onUpdateClass = async (e) => {
     e.preventDefault();
     setIsLoading(true);
+
+    const classesRef = doc(db, "classes", selectedClass.id);
+
+    const updateClass_ = {
+      image: viewImage,
+      video: viewVideo,
+      name: name.length <= 0 ? selectedClass.name : name,
+      category: category?.value || selectedClass.category,
+      subcategory: subCategory?.value || selectedClass.subcategory,
+    };
+
+    if (rawImage) {
+      try {
+        const imageUrl = await imageToGithub(rawImage);
+        updateClass_.image = imageUrl;
+      } catch (e) {
+        toast.error(`Error uploading image: ${e}`, {
+          className: "text-danger",
+        });
+      }
+    }
+
+    if (rawVideo) {
+      try {
+        const videoUrl = await videoToGithub(rawVideo);
+        updateClass_.video = videoUrl;
+      } catch (e) {
+        toast.error(`Error uploading video: ${e}`, {
+          className: "text-danger",
+        });
+      }
+    }
+
+    onDbUpdate(classesRef, updateClass_);
+    toast.success("Class updated successfully!");
+  };
+
+  const onDbUpdate = (ref, data) => {
+    updateDoc(ref, data)
+      .then(() => {
+        formRef.current?.reset();
+        handleClose();
+        toast.dark("Class updated successfully");
+      })
+      .catch((e) => {
+        toast.error(`Error occured: ${e}`, {
+          className: "text-danger",
+        });
+      })
+      .finally((_) => setIsLoading(false));
   };
 
   const handleClose = () => {

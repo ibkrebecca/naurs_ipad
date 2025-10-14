@@ -90,8 +90,6 @@ const Admin = () => {
           {truncate(capitalize(c.name), 30)}
         </div>
       </td>
-      <td className="align-middle">{c.id}</td>
-
       <td className="align-middle">{c.category.name}</td>
 
       <td className="align-middle">{c.subcategory.name}</td>
@@ -190,8 +188,7 @@ const Admin = () => {
               <table className="table table-hover">
                 <thead>
                   <tr className="thead-dash">
-                    <th scope="col">#</th>
-                    <th scope="col">Name</th>
+                    <th scope="col"># Name</th>
                     <th scope="col">Category</th>
                     <th scope="col">Sub Category</th>
                     <th scope="col">Video</th>
