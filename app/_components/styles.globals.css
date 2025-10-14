@@ -280,7 +280,7 @@ input[type="file"]::file-selector-button {
   text-align: center;
   padding: 10px;
   position: relative;
-  border-radius: 42px;
+  border-radius: 16px;
 }
 
 .cus-form-file input {
@@ -308,7 +308,7 @@ input[type="file"]::file-selector-button {
   background: #007bff;
   color: #fff;
   padding: 8px 12px;
-  border-radius: 42px;
+  border-radius: 16px;
   font-size: 16px;
   margin-right: 10px;
 }
@@ -327,7 +327,7 @@ input[type="file"]::file-selector-button {
   width: 100px;
   height: 100px;
   object-fit: cover;
-  border-radius: 42px;
+  border-radius: 16px;
 }
 
 /* toatify */

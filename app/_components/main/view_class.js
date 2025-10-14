@@ -29,14 +29,13 @@ const ViewClass = ({ selectedClass, onHide }) => {
       >
         {selectedClass.video && (
           <video
-            autoPlay
-            loop
+            src={selectedClass.video}
             muted
+            loop
+            autoPlay
             playsInline
             className="w-100 h-100 position-absolute top-0 start-0 object-fit-cover z-0 bg-white"
-          >
-            <source src={selectedClass.video} type="video/mp4" />
-          </video>
+          />
         )}
 
         <div className="position-relative z-1 overflow-y-scroll">
