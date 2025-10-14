@@ -4,65 +4,36 @@ import Link from "next/link";
 import discount from "@/public/icons/discount.png";
 import home from "@/public/icons/home.png";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Pricing from "@/app/_components/main/pricing";
 import ViewClass from "@/app/_components/main/view_class";
-
-const allClasses = [
-  {
-    image: "/images/1.png",
-    video: "/videos/1.mp4",
-    title: "Zumba Class",
-    calendar: "Mon, Wed, Fri 9:55am - 10:45am",
-    category: "adult",
-    subcategory: "gravity",
-  },
-  {
-    image: "/images/2.png",
-    video: "",
-    title: "Let’s Nacho (Bollywood Fitness Dance)",
-    calendar: "Mon 7:00pm, Wed 7:00pm, Fri 6:30 pm",
-    category: "adult",
-    subcategory: "gravity",
-  },
-  {
-    image: "/images/3.png",
-    video: "",
-    title: "Aerial Yoga",
-    calendar: null,
-    category: "adult",
-    subcategory: "sky",
-  },
-  {
-    image: "/images/4.png",
-    video: "",
-    title: "Deep Stretch by Shantanu Tyagi",
-    calendar: "Sun 6:00pm - 7:00pm, Tue 7:15pm - 8:15pm",
-    category: "adult",
-    subcategory: "sky",
-  },
-  {
-    image: "/images/5.png",
-    video: "",
-    title: "Drums Class",
-    calendar: null,
-    category: "kids",
-    subcategory: "fine_art",
-  },
-  {
-    image: "/images/5.png",
-    video: "",
-    title: "Kinder Gymnastics (2-4 years old) by Daria",
-    calendar: null,
-    category: "kids",
-    subcategory: "fitness",
-  },
-];
+import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
+import { db } from "@/app/_components/backend/config";
+import Loader from "@/app/_components/loader";
+import { Trash } from "iconsax-react";
+import capitalize from "@/app/_utils/capitalize";
+import { truncate } from "@/app/_utils/truncate";
 
 const Menu = () => {
   const [selected, setSelected] = useState("gravity");
   const [selectedClass, setSelectedClass] = useState(null);
   const [openPricing, setOpenPricing] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [classes, setClasses] = useState([]);
+
+  useEffect(() => {
+    const unsubscribe = onSnapshot(
+      query(collection(db, "classes"), orderBy("createdOn", "desc")),
+      (snap) => {
+        setIsLoading(false);
+        setClasses(snap.docs.map((doc) => doc.data()));
+      }
+    );
+
+    return () => unsubscribe();
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const isSelected = (key) => selected === key;
 
@@ -141,109 +112,135 @@ const Menu = () => {
         <div className="menu-divider" />
 
         <section className="container-fluid">
-          <div id="gravity" className="row mb-5">
-            <div className="col-12 mb-3">
-              <h3 className="font-32">
-                Adult Fitness <span className="pink">(Gravity Classes)</span>
-              </h3>
+          {isLoading && classes === null && (
+            <div className="col-md-12 d-flex justify-content-center align-items-center">
+              <Loader />
             </div>
+          )}
 
-            {allClasses
-              .filter((c) => c.subcategory === "gravity")
-              .map((c, i) => (
-                <div
-                  key={i}
-                  onClick={() => setSelectedClass(c)}
-                  className="pe-active col-sm-4"
-                >
-                  <div className="class-card">
-                    <img className="class-card-img" src={c.image} />
-
-                    <div className="class-card-body text-white">
-                      <h3 className="text-white font-20">{c.title}</h3>
-                      <p className="text-white font-16">{c.calendar}</p>
-                    </div>
-                  </div>
-                </div>
-              ))}
-          </div>
-
-          <div id="sky" className="row mb-5">
-            <div className="col-12 mb-3">
-              <h3 className="font-32">
-                Adult Fitness <span className="pink">(Sky Classes)</span>
-              </h3>
+          {!isLoading && classes !== null && classes.length === 0 && (
+            <div className="col-md-12 text-muted text-center d-flex flex-column justify-content-center align-items-center">
+              <Trash color="black" size={50} variant="Bulk" />
+              <p className="mt-4 mb-0">No classes yet</p>
             </div>
+          )}
 
-            {allClasses
-              .filter((c) => c.subcategory === "sky")
-              .map((c, i) => (
-                <div
-                  key={i}
-                  onClick={() => setSelectedClass(c)}
-                  className="col-sm-4"
-                >
-                  <div className="class-card">
-                    <img className="class-card-img" src={c.image} />
-
-                    <div className="class-card-body text-white">
-                      <h3 className="text-white font-20">{c.title}</h3>
-                      <p className="text-white font-16">{c.calendar}</p>
-                    </div>
-                  </div>
+          {!isLoading && classes !== null && classes.length > 0 && (
+            <>
+              <div id="gravity" className="row mb-5">
+                <div className="col-12 mb-3">
+                  <h3 className="font-32">
+                    Adult Fitness{" "}
+                    <span className="pink">(Gravity Classes)</span>
+                  </h3>
                 </div>
-              ))}
-          </div>
 
-          <div id="fine_art" className="row mb-5">
-            <div className="col-12 mb-3">
-              <h3 className="font-32">Kids Fine Art Classes</h3>
-            </div>
+                {classes
+                  .filter((c) => c.subcategory.id === "gravity")
+                  .map((c, i) => (
+                    <div
+                      key={i}
+                      onClick={() => setSelectedClass(c)}
+                      className="pe-active col-sm-4"
+                    >
+                      <div className="class-card">
+                        <img className="class-card-img" src={c.image} />
 
-            {allClasses
-              .filter((c) => c.subcategory === "fine_art")
-              .map((c, i) => (
-                <div
-                  key={i}
-                  onClick={() => setSelectedClass(c)}
-                  className="col-sm-4"
-                >
-                  <div className="class-card">
-                    <img className="class-card-img" src={c.image} />
-
-                    <div className="class-card-body text-white">
-                      <h3 className="text-white font-20">{c.title}</h3>
-                      <p className="text-white font-16">{c.calendar}</p>
+                        <div className="class-card-body text-white">
+                          <h3 className="text-white font-20">
+                            {truncate(capitalize(c.name), 30)}
+                          </h3>
+                          <p className="text-white font-16">{c.calendar}</p>
+                        </div>
+                      </div>
                     </div>
-                  </div>
+                  ))}
+              </div>
+
+              <div id="sky" className="row mb-5">
+                <div className="col-12 mb-3">
+                  <h3 className="font-32">
+                    Adult Fitness <span className="pink">(Sky Classes)</span>
+                  </h3>
                 </div>
-              ))}
-          </div>
 
-          <div id="fitness" className="row mb-5">
-            <div className="col-12 mb-3">
-              <h3 className="font-32">Kids Fitness Classes</h3>
-            </div>
+                {classes
+                  .filter((c) => c.subcategory.id === "sky")
+                  .map((c, i) => (
+                    <div
+                      key={i}
+                      onClick={() => setSelectedClass(c)}
+                      className="col-sm-4"
+                    >
+                      <div className="class-card">
+                        <img className="class-card-img" src={c.image} />
 
-            {allClasses
-              .filter((c) => c.subcategory === "fitness")
-              .map((c, i) => (
-                <div
-                  key={i}
-                  onClick={() => setSelectedClass(c)}
-                  className="col-sm-4"
-                >
-                  <div className="class-card">
-                    <img className="class-card-img" src={c.image} />
-
-                    <div className="class-card-body text-white">
-                      <h3 className="text-white font-20">{c.title}</h3>
-                      <p className="text-white font-16">{c.calendar}</p>
+                        <div className="class-card-body text-white">
+                          <h3 className="text-white font-20">
+                            {truncate(capitalize(c.name), 30)}
+                          </h3>
+                          <p className="text-white font-16">{c.calendar}</p>
+                        </div>
+                      </div>
                     </div>
-                  </div>
+                  ))}
+              </div>
+
+              <div id="fine_art" className="row mb-5">
+                <div className="col-12 mb-3">
+                  <h3 className="font-32">Kids Fine Art Classes</h3>
                 </div>
-              ))}
-          </div>
+
+                {classes
+                  .filter((c) => c.subcategory.id === "fine_art")
+                  .map((c, i) => (
+                    <div
+                      key={i}
+                      onClick={() => setSelectedClass(c)}
+                      className="col-sm-4"
+                    >
+                      <div className="class-card">
+                        <img className="class-card-img" src={c.image} />
+
+                        <div className="class-card-body text-white">
+                          <h3 className="text-white font-20">
+                            {truncate(capitalize(c.name), 30)}
+                          </h3>
+                          <p className="text-white font-16">{c.calendar}</p>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+              </div>
+
+              <div id="fitness" className="row mb-5">
+                <div className="col-12 mb-3">
+                  <h3 className="font-32">Kids Fitness Classes</h3>
+                </div>
+
+                {classes
+                  .filter((c) => c.subcategory.id === "fitness")
+                  .map((c, i) => (
+                    <div
+                      key={i}
+                      onClick={() => setSelectedClass(c)}
+                      className="col-sm-4"
+                    >
+                      <div className="class-card">
+                        <img className="class-card-img" src={c.image} />
+
+                        <div className="class-card-body text-white">
+                          <h3 className="text-white font-20">
+                            {truncate(capitalize(c.name), 30)}
+                          </h3>
+                          <p className="text-white font-16">{c.calendar}</p>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+              </div>
+            </>
+          )}
         </section>
       </main>
 

@@ -42,9 +42,9 @@ const ViewClass = ({ selectedClass, onHide }) => {
           <Modal.Header className="transparent sticky-top z-3 pb-2" closeButton>
             <Modal.Title>
               <div className="view-class-category">
-                {capitalize(selectedClass.category.replaceAll("_", " "))}
+                {capitalize(selectedClass.category.name)}
                 <span className="pink ms-2 font-14">
-                  ({capitalize(selectedClass.subcategory.replaceAll("_", " "))})
+                  ({capitalize(selectedClass.subcategory.name)})
                 </span>
               </div>
             </Modal.Title>
@@ -55,22 +55,26 @@ const ViewClass = ({ selectedClass, onHide }) => {
               <div className="row">
                 <div className="col-md-12">
                   <div className="d-flex justify-content-between align-items-start">
-                    <h4 className="m-0 me-2">{selectedClass.title}</h4>
+                    <h4 className="m-0 me-2">{capitalize(selectedClass.name)}</h4>
 
                     <div className="text-end ms-2 d-flex align-items-end justify-content-end flex-column">
                       <div className="view-class-price">
                         Starting from{" "}
-                        {selectedClass.category === "adult" && (
+                        {selectedClass.category.id }
+                        {selectedClass.category.id === "adult" && (
                           <h6 className="fw-bold m-0 ms-2">
-                            {selectedClass.subcategory === "gravity" && "80 "}
-                            {selectedClass.subcategory === "sky" && "125 "}
+                            {selectedClass.subcategory.id === "gravity" &&
+                              "80 "}
+                            {selectedClass.subcategory.id === "sky" && "125 "}
                             AED
                           </h6>
                         )}
-                        {selectedClass.category === "kids" && (
+                        {selectedClass.category.id === "kids" && (
                           <h6 className="fw-bold m-0 ms-2">
-                            {selectedClass.subcategory === "fine_art" && "425 "}
-                            {selectedClass.subcategory === "fitness" && "360 "}
+                            {selectedClass.subcategory.id === "fine_art" &&
+                              "425 "}
+                            {selectedClass.subcategory.id === "fitness" &&
+                              "360 "}
                             AED
                           </h6>
                         )}
@@ -83,12 +87,12 @@ const ViewClass = ({ selectedClass, onHide }) => {
                   </div>
                 </div>
 
-                {selectedClass.category === "adult" && (
+                {selectedClass.category.id === "adult" && (
                   <div className="col-md-12 mt-4">
                     <div className="mb-4">
                       <h5 className="fw-normal mb-3">Per Class</h5>
 
-                      {selectedClass.subcategory === "sky" && (
+                      {selectedClass.subcategory.id === "sky" && (
                         <img
                           src="/images/pricing/adult_fitness_sky_per_class.png"
                           alt="adult_fitness_sky_per_class"
@@ -96,7 +100,7 @@ const ViewClass = ({ selectedClass, onHide }) => {
                         />
                       )}
 
-                      {selectedClass.subcategory === "gravity" && (
+                      {selectedClass.subcategory.id === "gravity" && (
                         <img
                           src="/images/pricing/adult_fitness_gravity_per_class.png"
                           alt="adult_fitness_gravity_per_class"
@@ -116,9 +120,9 @@ const ViewClass = ({ selectedClass, onHide }) => {
                   </div>
                 )}
 
-                {selectedClass.category === "kids" && (
+                {selectedClass.category.id === "kids" && (
                   <div className="col-md-12 mt-4">
-                    {selectedClass.subcategory === "fine_art" && (
+                    {selectedClass.subcategory.id === "fine_art" && (
                       <>
                         <div className="mb-4">
                           <h5 className="fw-normal mb-3">
@@ -151,7 +155,7 @@ const ViewClass = ({ selectedClass, onHide }) => {
                       </>
                     )}
 
-                    {selectedClass.subcategory === "fitness" && (
+                    {selectedClass.subcategory.id === "fitness" && (
                       <div className="mb-4">
                         <h5 className="fw-normal mb-3">General Classes</h5>
 
@@ -170,73 +174,6 @@ const ViewClass = ({ selectedClass, onHide }) => {
         </div>
       </div>
     </Modal>
-    // <Modal
-    //   dialogClassName="modal-85w"
-    //   centered
-    //   show={show}
-    //   onHide={handleClose}
-    //   contentClassName="custom-modal-content"
-    // >
-    //   <div
-    //     className="modal-bg"
-    //     // style={{
-    //     //   backgroundImage: `url(${selectedClass.image})`,
-    //     // }}
-    //   >
-    //     <Modal.Header className="transparent sticky-top z-3 pb-2" closeButton>
-    //       <Modal.Title>
-    //         <div className="view-class-category">
-    //           {capitalize(selectedClass.category.replaceAll("_", " "))}
-    //           <span className="pink ms-2 font-14">
-    //             ({capitalize(selectedClass.subcategory.replaceAll("_", " "))})
-    //           </span>
-    //         </div>
-    //       </Modal.Title>
-    //     </Modal.Header>
-
-    //     <Modal.Body className="view-class">
-    //       <div className="container-fluid">
-    //         <div className="row">
-    //           <div className="col-md-12">
-    //             <div className="d-flex justify-content-between align-items-start">
-    //               <h4 className="m-0 me-2">{selectedClass.title}</h4>
-
-    //               <div className="text-end ms-2 d-flex align-items-end justify-content-end flex-column">
-    //                 <div className="view-class-price">
-    //                   Starting from <h5 className="fw-bold m-0 ms-2">80 AED</h5>
-    //                 </div>
-
-    //                 {selectedClass.calendar && (
-    //                   <p className="pink mt-2">{selectedClass.calendar}</p>
-    //                 )}
-    //               </div>
-    //             </div>
-    //           </div>
-
-    //           <div className="col-md-12 mt-4">
-    //             <div className="mb-4">
-    //               <h5 className="fw-normal mb-3">Per Class</h5>
-    //               <img
-    //                 src="/images/pricing/adult_fitness_per_class.png"
-    //                 alt="adult_fitness_per_class"
-    //                 width="100%"
-    //               />
-    //             </div>
-
-    //             <div className="mb-4">
-    //               <h5 className="fw-normal mb-3">General Pricing</h5>
-    //               <img
-    //                 src="/images/pricing/adult_fitness.png"
-    //                 alt="adult_fitness"
-    //                 width="100%"
-    //               />
-    //             </div>
-    //           </div>
-    //         </div>
-    //       </div>
-    //     </Modal.Body>
-    //   </div>
-    // </Modal>
   );
 };
 
