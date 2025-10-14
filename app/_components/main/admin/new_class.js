@@ -7,14 +7,14 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { toast } from "react-toastify";
 import imageToGithub from "@/app/_utils/image_to_github";
-// import { videoToGithub } from "@/app/_utils/video_to_github";
-
+import videoToGithub from "@/app/_utils/video_to_github";
 import {
   collection,
   onSnapshot,
   orderBy,
   query,
   serverTimestamp,
+  setDoc,
 } from "firebase/firestore";
 import { selectFormStyle, selectFormTheme } from "@/app/_utils/input_style";
 import { db } from "@/app/_components/backend/config";
@@ -51,21 +51,43 @@ const NewClass = ({ newClass, onHide }) => {
         className: "text-danger",
       });
     } else {
-      // setIsLoading(true);
-      const collRef = collection(db, "classes");
-      const image = await imageToGithub(rawImage);
+      setIsLoading(true);
+      toast.dark("Compressing and uploading Image");
 
-      const newClass_ = {
-        image: image,
-        video: null,
-        name: name,
-        category: category.value,
-        subcategory: subCategory.value,
-        createdOn: serverTimestamp(),
-      };
+      const classesRef = collection(db, "classes");
+      imageToGithub(rawImage).then((image) => {
+        const newClass_ = {
+          image: image,
+          video: null,
+          name: name,
+          category: category.value,
+          subcategory: subCategory.value,
+          createdOn: serverTimestamp(),
+        };
 
-      console.log(newClass_);
+        if (rawVideo) {
+          toast.dark("Uploading Video");
+          videoToGithub(rawVideo).then((video) => {
+            newClass_.video = video;
+
+            onDbUpdate(classesRef, newClass_);
+          });
+        } else {
+          onDbUpdate(classesRef, newClass_);
+        }
+      });
     }
+  };
+
+  const onDbUpdate = (ref, data) => {
+    setDoc(ref, data)
+      .then(() => toast.dark("Class added successfully"))
+      .catch((e) => {
+        toast.dark(`Error adding class: ${e}`, {
+          className: "text-danger",
+        });
+      })
+      .finally(() => setIsLoading(flase));
   };
 
   const handleClose = () => {

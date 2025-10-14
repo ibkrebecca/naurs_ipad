@@ -20,8 +20,6 @@ const Signin = () => {
   const { loading, authUser, signin } = useAuth();
   const router = useRouter();
 
-  console.log("authUser: ", authUser);
-
   if (loading && authUser) return <Loader fullHeight={true} />;
 
   if (authUser && Cookies.get("AdminNaursSignedIn")) {

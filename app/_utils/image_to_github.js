@@ -6,7 +6,7 @@ const blobToBase64 = (blob) =>
     reader.onerror = (err) => reject(err);
   });
 
-const imageToGithub = async (file, maxWidth = 500) => {
+const imageToGithub = async (file, maxWidth = 800) => {
   // compress/resize using canvas
   const compressedBlob = await new Promise((resolve) => {
     const reader = new FileReader();

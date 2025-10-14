@@ -9,6 +9,8 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@ffmpeg/ffmpeg": "^0.12.15",
+    "@ffmpeg/util": "^0.12.2",
     "@octokit/rest": "^22.0.0",
     "bootstrap": "^5.3.8",
     "embla-carousel": "^8.6.0",
