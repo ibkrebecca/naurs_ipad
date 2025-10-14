@@ -60,7 +60,6 @@ const ViewClass = ({ selectedClass, onHide }) => {
                     <div className="text-end ms-2 d-flex align-items-end justify-content-end flex-column">
                       <div className="view-class-price">
                         Starting from{" "}
-                        {selectedClass.category.id }
                         {selectedClass.category.id === "adult" && (
                           <h6 className="fw-bold m-0 ms-2">
                             {selectedClass.subcategory.id === "gravity" &&
