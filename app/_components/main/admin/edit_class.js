@@ -8,6 +8,7 @@ import { useEffect, useRef, useState } from "react";
 import capitalize from "@/app/_utils/capitalize";
 import {
   collection,
+  deleteDoc,
   doc,
   onSnapshot,
   orderBy,
@@ -97,6 +98,23 @@ const EditClass = ({ selectedClass, onHide }) => {
         });
       })
       .finally((_) => setIsLoading(false));
+  };
+
+  const onDeleteClass = () => {
+    setIsDeleteLoading(true);
+
+    deleteDoc(doc(db, "classes", selectedClass.id))
+      .then(() => {
+        formRef.current?.reset();
+        handleClose();
+        toast.dark("Class deleted successfully");
+      })
+      .catch((e) => {
+        toast.error(`Error occured: ${e}`, {
+          className: "text-danger",
+        });
+      })
+      .finally((_) => setIsDeleteLoading(false));
   };
 
   const handleClose = () => {
@@ -293,7 +311,7 @@ const EditClass = ({ selectedClass, onHide }) => {
         <button
           type="button"
           disabled={isDeleteLoading}
-          onClick={() => {}}
+          onClick={() => onDeleteClass()}
           className="btn bg-danger text-white"
         >
           <CloseSquare size={20} color="white" />
