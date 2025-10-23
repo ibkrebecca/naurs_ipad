@@ -58,9 +58,9 @@ const ViewClass = ({ selectedClass, onHide }) => {
               <div className="row">
                 <div className="col-md-12">
                   <div className="d-flex justify-content-between align-items-start">
-                    <h4 className="m-0 me-2">
+                    <h3 className="m-0 me-2">
                       {capitalize(selectedClass.name)}
-                    </h4>
+                    </h3>
 
                     <div className="text-end ms-2 d-flex align-items-end justify-content-end flex-column">
                       <div className="view-class-price">
@@ -163,15 +163,19 @@ const ViewClass = ({ selectedClass, onHide }) => {
 
                     {selectedClass.subcategory.id === "fitness" && (
                       <>
-                        <div className="mb-4">
-                          <h5 className="fw-normal mb-3">Karate Pricing</h5>
+                        {selectedClass.name
+                          .toLowerCase()
+                          .includes("karate") && (
+                          <div className="mb-4">
+                            <h5 className="fw-normal mb-3">Pricing</h5>
 
-                          <img
-                            src="/images/pricing/karate.png"
-                            alt="karate"
-                            width="100%"
-                          />
-                        </div>
+                            <img
+                              src="/images/pricing/karate.png"
+                              alt="karate"
+                              width="100%"
+                            />
+                          </div>
+                        )}
 
                         <div className="mb-4">
                           <h5 className="fw-normal mb-3">General Classes</h5>
