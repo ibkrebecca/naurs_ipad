@@ -141,7 +141,7 @@ const Menu = () => {
                     <div
                       key={i}
                       onClick={() => setSelectedClass(c)}
-                      className="pe-active col-sm-4"
+                      className="pe-active col-sm-4 mb-4"
                     >
                       <div className="class-card">
                         <img className="class-card-img" src={c.image} />
@@ -170,7 +170,7 @@ const Menu = () => {
                     <div
                       key={i}
                       onClick={() => setSelectedClass(c)}
-                      className="col-sm-4"
+                      className="col-sm-4 mb-4"
                     >
                       <div className="class-card">
                         <img className="class-card-img" src={c.image} />
@@ -197,7 +197,7 @@ const Menu = () => {
                     <div
                       key={i}
                       onClick={() => setSelectedClass(c)}
-                      className="col-sm-4"
+                      className="col-sm-4 mb-4"
                     >
                       <div className="class-card">
                         <img className="class-card-img" src={c.image} />
@@ -224,7 +224,7 @@ const Menu = () => {
                     <div
                       key={i}
                       onClick={() => setSelectedClass(c)}
-                      className="col-sm-4"
+                      className="col-sm-4 mb-4"
                     >
                       <div className="class-card">
                         <img className="class-card-img" src={c.image} />

@@ -39,7 +39,10 @@ const ViewClass = ({ selectedClass, onHide }) => {
         )}
 
         <div className="position-relative z-1 overflow-y-scroll">
-          <Modal.Header className="transparent sticky-top z-3 pb-2" closeButton>
+          <Modal.Header
+            className="transparent sticky-top z-3 pb-2 m-0"
+            closeButton
+          >
             <Modal.Title>
               <div className="view-class-category">
                 {capitalize(selectedClass.category.name)}
@@ -55,7 +58,9 @@ const ViewClass = ({ selectedClass, onHide }) => {
               <div className="row">
                 <div className="col-md-12">
                   <div className="d-flex justify-content-between align-items-start">
-                    <h4 className="m-0 me-2">{capitalize(selectedClass.name)}</h4>
+                    <h4 className="m-0 me-2">
+                      {capitalize(selectedClass.name)}
+                    </h4>
 
                     <div className="text-end ms-2 d-flex align-items-end justify-content-end flex-column">
                       <div className="view-class-price">
@@ -80,7 +85,9 @@ const ViewClass = ({ selectedClass, onHide }) => {
                       </div>
 
                       {selectedClass.calendar && (
-                        <p className="pink mt-2">{capitalize(selectedClass.calendar)}</p>
+                        <p className="pink mt-2">
+                          {capitalize(selectedClass.calendar)}
+                        </p>
                       )}
                     </div>
                   </div>
@@ -155,15 +162,27 @@ const ViewClass = ({ selectedClass, onHide }) => {
                     )}
 
                     {selectedClass.subcategory.id === "fitness" && (
-                      <div className="mb-4">
-                        <h5 className="fw-normal mb-3">General Classes</h5>
+                      <>
+                        <div className="mb-4">
+                          <h5 className="fw-normal mb-3">Karate Pricing</h5>
 
-                        <img
-                          src="/images/pricing/kids_fitness.png"
-                          alt="kids_fitness"
-                          width="100%"
-                        />
-                      </div>
+                          <img
+                            src="/images/pricing/karate.png"
+                            alt="karate"
+                            width="100%"
+                          />
+                        </div>
+
+                        <div className="mb-4">
+                          <h5 className="fw-normal mb-3">General Classes</h5>
+
+                          <img
+                            src="/images/pricing/kids_fitness.png"
+                            alt="kids_fitness"
+                            width="100%"
+                          />
+                        </div>
+                      </>
                     )}
                   </div>
                 )}
