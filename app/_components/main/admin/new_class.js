@@ -6,8 +6,7 @@ import { Modal } from "react-bootstrap";
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { toast } from "react-toastify";
-import imageToGithub from "@/app/_utils/image_to_github";
-import videoToGithub from "@/app/_utils/video_to_github";
+import uploadToCloudinary from "@/app/_utils/upload_to_cloudinary";
 import {
   collection,
   doc,
@@ -35,6 +34,8 @@ const NewClass = ({ newClass, onHide }) => {
   const [subCategory, setSubCategory] = useState(null);
   const [name, setName] = useState("");
   const [calendar, setCalendar] = useState("");
+  const [uploadProgress, setUploadProgress] = useState(null);
+  const [uploadLabel, setUploadLabel] = useState("");
 
   useEffect(() => {
     const unsubscribe = onSnapshot(
@@ -53,56 +54,61 @@ const NewClass = ({ newClass, onHide }) => {
       toast.error("Add class background image", {
         className: "text-danger",
       });
-    } else {
-      setIsLoading(true);
-      toast.dark("Compressing and uploading Image");
-
-      const classesRef = doc(collection(db, "classes"));
-      imageToGithub(rawImage).then((image) => {
-        const newClass_ = {
-          id: classesRef.id,
-          image: image,
-          video: null,
-          name: name,
-          calendar: calendar.length <= 0 ? null : calendar,
-          category: category.value,
-          subcategory: subCategory.value,
-          createdOn: serverTimestamp(),
-        };
-
-        if (rawVideo) {
-          toast.dark("Uploading Video");
-          videoToGithub(rawVideo)
-            .then((video) => {
-              newClass_.video = video;
-              onDbUpdate(classesRef, newClass_);
-            })
-            .catch((e) => {
-              toast.dark(`Error uploading video: ${e}`, {
-                className: "text-danger",
-              });
-              setIsLoading(false);
-            });
-        } else {
-          onDbUpdate(classesRef, newClass_);
-        }
-      });
+      return;
     }
-  };
 
-  const onDbUpdate = (ref, data) => {
-    setDoc(ref, data)
-      .then(() => {
-        formRef.current?.reset();
-        handleClose();
-        toast.dark("Class added successfully");
-      })
-      .catch((e) => {
-        toast.dark(`Error adding class: ${e}`, {
-          className: "text-danger",
+    setIsLoading(true);
+
+    try {
+      const classesRef = doc(collection(db, "classes"));
+
+      setUploadLabel("Image");
+      setUploadProgress(0);
+      const image = await uploadToCloudinary(rawImage, {
+        resourceType: "image",
+        onProgress: (pct) => setUploadProgress(pct),
+      });
+      setUploadProgress(null);
+
+      let video = null;
+      if (rawVideo) {
+        setUploadLabel("Video");
+        setUploadProgress(0);
+        video = await uploadToCloudinary(rawVideo, {
+          resourceType: "video",
+          onProgress: (pct) => setUploadProgress(pct),
         });
-      })
-      .finally(() => setIsLoading(false));
+        setUploadProgress(null);
+      }
+
+      await setDoc(classesRef, {
+        id: classesRef.id,
+        image,
+        video,
+        name,
+        calendar: calendar.length <= 0 ? null : calendar,
+        category: category.value,
+        subcategory: subCategory.value,
+        createdOn: serverTimestamp(),
+      });
+
+      formRef.current?.reset();
+      setName("");
+      setCalendar("");
+      setCategory(null);
+      setSubCategory(null);
+      setRawImage(null);
+      setViewImage(null);
+      setRawVideo(null);
+      setViewVideo(null);
+      handleClose();
+      toast.dark("Class added successfully");
+    } catch (err) {
+      // keep the modal open with state intact so the user can retry
+      toast.error(`${err.message || err}`, { className: "text-danger" });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleClose = () => {
@@ -304,16 +310,35 @@ const NewClass = ({ newClass, onHide }) => {
         </div>
       </Modal.Body>
 
-      <Modal.Footer className="col-md-12 d-flex justify-content-end">
-        <button
-          type="submit"
-          form="addClass"
-          disabled={isLoading}
-          className="btn btn-dark"
-        >
-          <TickSquare color="white" size={20} />
-          {isLoading ? <Loader /> : "Add Class"}
-        </button>
+      <Modal.Footer className="col-md-12 d-flex flex-column align-items-stretch">
+        {uploadProgress !== null && (
+          <div className="w-100 mb-2">
+            <small className="text-muted">
+              Uploading {uploadLabel}… {uploadProgress}%
+            </small>
+            <div className="progress" style={{ height: 6 }}>
+              <div
+                className="progress-bar progress-bar-striped progress-bar-animated bg-dark"
+                style={{ width: `${uploadProgress}%` }}
+                role="progressbar"
+                aria-valuenow={uploadProgress}
+                aria-valuemin={0}
+                aria-valuemax={100}
+              />
+            </div>
+          </div>
+        )}
+        <div className="d-flex justify-content-end">
+          <button
+            type="submit"
+            form="addClass"
+            disabled={isLoading}
+            className="btn btn-dark"
+          >
+            <TickSquare color="white" size={20} />
+            {isLoading ? <Loader /> : "Add Class"}
+          </button>
+        </div>
       </Modal.Footer>
     </Modal>
   );

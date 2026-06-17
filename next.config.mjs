@@ -28,6 +28,11 @@ const nextConfig = {
         hostname: "raw.githubusercontent.com",
         pathname: "**",
       },
+      {
+        protocol: "https",
+        hostname: "res.cloudinary.com",
+        pathname: "**",
+      },
     ],
   },
   webpack: (

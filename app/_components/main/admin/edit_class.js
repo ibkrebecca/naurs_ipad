@@ -20,6 +20,7 @@ import ReactSelect from "react-select";
 import { selectFormStyle, selectFormTheme } from "@/app/_utils/input_style";
 import Image from "next/image";
 import { toast } from "react-toastify";
+import uploadToCloudinary from "@/app/_utils/upload_to_cloudinary";
 
 const EditClass = ({ selectedClass, onHide }) => {
   const [show, setShow] = useState(!!selectedClass);
@@ -35,6 +36,8 @@ const EditClass = ({ selectedClass, onHide }) => {
   const [subCategory, setSubCategory] = useState(selectedClass.subcategory);
   const [name, setName] = useState("");
   const [calendar, setCalendar] = useState("");
+  const [uploadProgress, setUploadProgress] = useState(null);
+  const [uploadLabel, setUploadLabel] = useState("");
 
   useEffect(() => {
     const unsubscribe = onSnapshot(
@@ -50,56 +53,49 @@ const EditClass = ({ selectedClass, onHide }) => {
     e.preventDefault();
     setIsLoading(true);
 
-    const classesRef = doc(db, "classes", selectedClass.id);
+    try {
+      const classesRef = doc(db, "classes", selectedClass.id);
 
-    const updateClass_ = {
-      image: viewImage,
-      video: viewVideo,
-      name: name.length <= 0 ? selectedClass.name : name,
-      calendar: calendar.length <= 0 ? selectedClass.calendar : calendar,
-      category: category?.value || selectedClass.category,
-      subcategory: subCategory?.value || selectedClass.subcategory,
-    };
+      const updateClass_ = {
+        image: viewImage,
+        video: viewVideo,
+        name: name.length <= 0 ? selectedClass.name : name,
+        calendar: calendar.length <= 0 ? selectedClass.calendar : calendar,
+        category: category?.value || selectedClass.category,
+        subcategory: subCategory?.value || selectedClass.subcategory,
+      };
 
-    if (rawImage) {
-      try {
-        const imageUrl = await imageToGithub(rawImage);
-        updateClass_.image = imageUrl;
-      } catch (e) {
-        toast.error(`Error uploading image: ${e}`, {
-          className: "text-danger",
+      if (rawImage) {
+        setUploadLabel("Image");
+        setUploadProgress(0);
+        updateClass_.image = await uploadToCloudinary(rawImage, {
+          resourceType: "image",
+          onProgress: (pct) => setUploadProgress(pct),
         });
+        setUploadProgress(null);
       }
-    }
 
-    if (rawVideo) {
-      try {
-        const videoUrl = await videoToGithub(rawVideo);
-        updateClass_.video = videoUrl;
-      } catch (e) {
-        toast.error(`Error uploading video: ${e}`, {
-          className: "text-danger",
+      if (rawVideo) {
+        setUploadLabel("Video");
+        setUploadProgress(0);
+        updateClass_.video = await uploadToCloudinary(rawVideo, {
+          resourceType: "video",
+          onProgress: (pct) => setUploadProgress(pct),
         });
+        setUploadProgress(null);
       }
+
+      await updateDoc(classesRef, updateClass_);
+
+      formRef.current?.reset();
+      handleClose();
+      toast.dark("Class updated successfully");
+    } catch (err) {
+      // keep the modal open with state intact so the user can retry
+      toast.error(`${err.message || err}`, { className: "text-danger" });
+    } finally {
+      setIsLoading(false);
     }
-
-    onDbUpdate(classesRef, updateClass_);
-    toast.success("Class updated successfully!");
-  };
-
-  const onDbUpdate = (ref, data) => {
-    updateDoc(ref, data)
-      .then(() => {
-        formRef.current?.reset();
-        handleClose();
-        toast.dark("Class updated successfully");
-      })
-      .catch((e) => {
-        toast.error(`Error occured: ${e}`, {
-          className: "text-danger",
-        });
-      })
-      .finally((_) => setIsLoading(false));
   };
 
   const onDeleteClass = () => {
@@ -324,26 +320,45 @@ const EditClass = ({ selectedClass, onHide }) => {
         </div>
       </Modal.Body>
 
-      <Modal.Footer className="col-md-12 d-flex justify-content-between">
-        <button
-          type="button"
-          disabled={isDeleteLoading}
-          onClick={() => onDeleteClass()}
-          className="btn bg-danger text-white"
-        >
-          <CloseSquare size={20} color="white" />
-          {isDeleteLoading ? <Loader /> : "Delete Class"}
-        </button>
+      <Modal.Footer className="col-md-12 d-flex flex-column align-items-stretch">
+        {uploadProgress !== null && (
+          <div className="w-100 mb-2">
+            <small className="text-muted">
+              Uploading {uploadLabel}… {uploadProgress}%
+            </small>
+            <div className="progress" style={{ height: 6 }}>
+              <div
+                className="progress-bar progress-bar-striped progress-bar-animated bg-dark"
+                style={{ width: `${uploadProgress}%` }}
+                role="progressbar"
+                aria-valuenow={uploadProgress}
+                aria-valuemin={0}
+                aria-valuemax={100}
+              />
+            </div>
+          </div>
+        )}
+        <div className="d-flex justify-content-between">
+          <button
+            type="button"
+            disabled={isDeleteLoading}
+            onClick={() => onDeleteClass()}
+            className="btn bg-danger text-white"
+          >
+            <CloseSquare size={20} color="white" />
+            {isDeleteLoading ? <Loader /> : "Delete Class"}
+          </button>
 
-        <button
-          type="submit"
-          form="updateClass"
-          disabled={isLoading}
-          className="btn btn-dark"
-        >
-          <TickSquare size={20} color="white" />
-          {isLoading ? <Loader /> : "Update Class"}
-        </button>
+          <button
+            type="submit"
+            form="updateClass"
+            disabled={isLoading}
+            className="btn btn-dark"
+          >
+            <TickSquare size={20} color="white" />
+            {isLoading ? <Loader /> : "Update Class"}
+          </button>
+        </div>
       </Modal.Footer>
     </Modal>
   );
