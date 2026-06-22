@@ -7,6 +7,10 @@ import capitalize from "@/app/_utils/capitalize";
 const ViewClass = ({ selectedClass, onHide }) => {
   const [show, setShow] = useState(!!selectedClass);
 
+  const title = selectedClass.name.toLowerCase();
+
+  const isWesternVoice = title.includes("western") && title.includes("vocal");
+
   const handleClose = () => {
     setShow(false);
     if (onHide) onHide();
@@ -93,102 +97,131 @@ const ViewClass = ({ selectedClass, onHide }) => {
                   </div>
                 </div>
 
-                {selectedClass.category.id === "adult" && (
+                {isWesternVoice ? (
                   <div className="col-md-12 mt-4">
                     <div className="mb-4">
-                      <h5 className="fw-normal mb-3">Per Class</h5>
+                      <h5 className="fw-normal mb-3">One-To-One</h5>
 
-                      {selectedClass.subcategory.id === "sky" && (
-                        <img
-                          src="/images/pricing/adult_fitness_sky_per_class.png"
-                          alt="adult_fitness_sky_per_class"
-                          width="100%"
-                        />
-                      )}
-
-                      {selectedClass.subcategory.id === "gravity" && (
-                        <img
-                          src="/images/pricing/adult_fitness_gravity_per_class.png"
-                          alt="adult_fitness_gravity_per_class"
-                          width="100%"
-                        />
-                      )}
-                    </div>
-
-                    <div className="mb-4">
-                      <h5 className="fw-normal mb-3">General Classes</h5>
                       <img
-                        src="/images/pricing/adult_fitness.png"
-                        alt="adult_fitness"
+                        src="/images/pricing/western_vocal_one_on_one.png"
+                        alt="western_vocal_one_on_one"
                         width="100%"
+                      />
+
+                      <h5 className="fw-normal mb-3 mt-4">Group</h5>
+
+                      <img
+                        src="/images/pricing/western_vocal_group.png"
+                        alt="western_vocal_group"
+                        width="100%"
+                        className="mt-2"
                       />
                     </div>
                   </div>
-                )}
-
-                {selectedClass.category.id === "kids" && (
-                  <div className="col-md-12 mt-4">
-                    {selectedClass.subcategory.id === "fine_art" && (
-                      <>
+                ) : (
+                  <>
+                    {selectedClass.category.id === "adult" && (
+                      <div className="col-md-12 mt-4">
                         <div className="mb-4">
-                          <h5 className="fw-normal mb-3">
-                            One-To-One Music Class
-                          </h5>
+                          <h5 className="fw-normal mb-3">Per Class</h5>
 
-                          <img
-                            src="/images/pricing/kids_one_to_one_music.png"
-                            alt="kids_one_to_one_music"
-                            width="100%"
-                          />
-
-                          <img
-                            src="/images/pricing/kids_music_benefits.png"
-                            alt="kids_music_benefits"
-                            width="100%"
-                            className="mt-2"
-                          />
-                        </div>
-
-                        <div className="mb-4">
-                          <h5 className="fw-normal mb-3">General Classes</h5>
-
-                          <img
-                            src="/images/pricing/kids_music.png"
-                            alt="kids_music"
-                            width="100%"
-                          />
-                        </div>
-                      </>
-                    )}
-
-                    {selectedClass.subcategory.id === "fitness" && (
-                      <>
-                        {selectedClass.name
-                          .toLowerCase()
-                          .includes("karate") && (
-                          <div className="mb-4">
-                            <h5 className="fw-normal mb-3">Pricing</h5>
-
+                          {selectedClass.subcategory.id === "sky" && (
                             <img
-                              src="/images/pricing/karate.png"
-                              alt="karate"
+                              src="/images/pricing/adult_fitness_sky_per_class.png"
+                              alt="adult_fitness_sky_per_class"
                               width="100%"
                             />
-                          </div>
-                        )}
+                          )}
+
+                          {selectedClass.subcategory.id === "gravity" && (
+                            <img
+                              src="/images/pricing/adult_fitness_gravity_per_class.png"
+                              alt="adult_fitness_gravity_per_class"
+                              width="100%"
+                            />
+                          )}
+                        </div>
 
                         <div className="mb-4">
                           <h5 className="fw-normal mb-3">General Classes</h5>
-
                           <img
-                            src="/images/pricing/kids_fitness.png"
-                            alt="kids_fitness"
+                            src="/images/pricing/adult_fitness.png"
+                            alt="adult_fitness"
                             width="100%"
                           />
                         </div>
-                      </>
+                      </div>
                     )}
-                  </div>
+
+                    {selectedClass.category.id === "kids" && (
+                      <div className="col-md-12 mt-4">
+                        {selectedClass.subcategory.id === "fine_art" && (
+                          <>
+                            <div className="mb-4">
+                              <h5 className="fw-normal mb-3">
+                                One-To-One Music Class
+                              </h5>
+
+                              <img
+                                src="/images/pricing/kids_one_to_one_music.png"
+                                alt="kids_one_to_one_music"
+                                width="100%"
+                              />
+
+                              <img
+                                src="/images/pricing/kids_music_benefits.png"
+                                alt="kids_music_benefits"
+                                width="100%"
+                                className="mt-2"
+                              />
+                            </div>
+
+                            <div className="mb-4">
+                              <h5 className="fw-normal mb-3">
+                                General Classes
+                              </h5>
+
+                              <img
+                                src="/images/pricing/kids_music.png"
+                                alt="kids_music"
+                                width="100%"
+                              />
+                            </div>
+                          </>
+                        )}
+
+                        {selectedClass.subcategory.id === "fitness" && (
+                          <>
+                            {selectedClass.name
+                              .toLowerCase()
+                              .includes("karate") && (
+                              <div className="mb-4">
+                                <h5 className="fw-normal mb-3">Pricing</h5>
+
+                                <img
+                                  src="/images/pricing/karate.png"
+                                  alt="karate"
+                                  width="100%"
+                                />
+                              </div>
+                            )}
+
+                            <div className="mb-4">
+                              <h5 className="fw-normal mb-3">
+                                General Classes
+                              </h5>
+
+                              <img
+                                src="/images/pricing/kids_fitness.png"
+                                alt="kids_fitness"
+                                width="100%"
+                              />
+                            </div>
+                          </>
+                        )}
+                      </div>
+                    )}
+                  </>
                 )}
               </div>
             </div>
