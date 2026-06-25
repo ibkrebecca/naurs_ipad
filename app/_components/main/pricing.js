@@ -49,8 +49,8 @@ const Pricing = ({ openPricing, onHide }) => {
               <div className="mb-5">
                 <h2 className="fw-normal mb-3">Kids One-To-One Music</h2>
                 <img
-                  src="/images/pricing/kids_one_to_one_music.png"
-                  alt="kids_one_to_one_music"
+                  src="/images/pricing/kids_one_to_one_music_no_gold.png"
+                  alt="kids_one_to_one_music_no_gold"
                   width="100%"
                 />
               </div>
@@ -62,8 +62,8 @@ const Pricing = ({ openPricing, onHide }) => {
                 </div>
 
                 <img
-                  src="/images/pricing/kids_music.png"
-                  alt="kids_music"
+                  src="/images/pricing/kids_music_no_gold.png"
+                  alt="kids_music_no_gold"
                   width="100%"
                 />
 

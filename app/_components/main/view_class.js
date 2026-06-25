@@ -163,8 +163,8 @@ const ViewClass = ({ selectedClass, onHide }) => {
                               </h5>
 
                               <img
-                                src="/images/pricing/kids_one_to_one_music.png"
-                                alt="kids_one_to_one_music"
+                                src="/images/pricing/kids_one_to_one_music_no_gold.png"
+                                alt="kids_one_to_one_music_no_gold"
                                 width="100%"
                               />
 
@@ -182,8 +182,8 @@ const ViewClass = ({ selectedClass, onHide }) => {
                               </h5>
 
                               <img
-                                src="/images/pricing/kids_music.png"
-                                alt="kids_music"
+                                src="/images/pricing/kids_music_no_gold.png"
+                                alt="kids_music_no_gold"
                                 width="100%"
                               />
                             </div>
