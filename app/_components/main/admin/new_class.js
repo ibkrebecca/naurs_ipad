@@ -6,7 +6,7 @@ import { Modal } from "react-bootstrap";
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { toast } from "react-toastify";
-import uploadToCloudinary from "@/app/_utils/upload_to_cloudinary";
+import uploadToImageKit from "@/app/_utils/upload_to_imagekit";
 import {
   collection,
   doc,
@@ -64,7 +64,7 @@ const NewClass = ({ newClass, onHide }) => {
 
       setUploadLabel("Image");
       setUploadProgress(0);
-      const image = await uploadToCloudinary(rawImage, {
+      const image = await uploadToImageKit(rawImage, {
         resourceType: "image",
         onProgress: (pct) => setUploadProgress(pct),
       });
@@ -74,7 +74,7 @@ const NewClass = ({ newClass, onHide }) => {
       if (rawVideo) {
         setUploadLabel("Video");
         setUploadProgress(0);
-        video = await uploadToCloudinary(rawVideo, {
+        video = await uploadToImageKit(rawVideo, {
           resourceType: "video",
           onProgress: (pct) => setUploadProgress(pct),
         });

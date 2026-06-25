@@ -20,7 +20,7 @@ import ReactSelect from "react-select";
 import { selectFormStyle, selectFormTheme } from "@/app/_utils/input_style";
 import Image from "next/image";
 import { toast } from "react-toastify";
-import uploadToCloudinary from "@/app/_utils/upload_to_cloudinary";
+import uploadToImageKit from "@/app/_utils/upload_to_imagekit";
 
 const EditClass = ({ selectedClass, onHide }) => {
   const [show, setShow] = useState(!!selectedClass);
@@ -68,7 +68,7 @@ const EditClass = ({ selectedClass, onHide }) => {
       if (rawImage) {
         setUploadLabel("Image");
         setUploadProgress(0);
-        updateClass_.image = await uploadToCloudinary(rawImage, {
+        updateClass_.image = await uploadToImageKit(rawImage, {
           resourceType: "image",
           onProgress: (pct) => setUploadProgress(pct),
         });
@@ -78,7 +78,7 @@ const EditClass = ({ selectedClass, onHide }) => {
       if (rawVideo) {
         setUploadLabel("Video");
         setUploadProgress(0);
-        updateClass_.video = await uploadToCloudinary(rawVideo, {
+        updateClass_.video = await uploadToImageKit(rawVideo, {
           resourceType: "video",
           onProgress: (pct) => setUploadProgress(pct),
         });

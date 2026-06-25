@@ -21,9 +21,9 @@ No test framework is configured.
 
 **Data:** Firestore with `onSnapshot()` real-time listeners — no polling, no Redux/Zustand. Three collections: `classes`, `categories`, `admins`.
 
-**File uploads:** `app/_utils/upload_to_cloudinary.js` uploads media **directly from the browser** to Cloudinary via an unsigned upload preset (`POST https://api.cloudinary.com/v1_1/<cloud>/<image|video>/upload`). This bypasses Vercel's 4.5 MB serverless body limit — there is no server route. Images are first compressed/resized via the Canvas API; videos are capped at 100 MB (Cloudinary free-plan limit). The returned `secure_url` is saved to Firestore. Next.js image config allows `res.cloudinary.com` for new uploads and `raw.githubusercontent.com` for legacy media uploaded before the migration (those old URLs remain valid).
+**File uploads:** `app/_utils/upload_to_imagekit.js` uploads media **directly from the browser** to ImageKit. Unlike Cloudinary, ImageKit has no unsigned upload, so the browser first calls the admin-gated route `app/api/upload-auth/route.js` to get short-lived `signature`/`token`/`expire` params, then POSTs the file **browser → ImageKit directly** (via `@imagekit/next`'s `upload()`). Only the tiny auth request hits the server, so Vercel's 4.5 MB serverless body limit is still bypassed. The auth route verifies the caller's Firebase ID token and confirms the email exists in the `admins` collection before issuing params. Images are first compressed/resized via the Canvas API; videos are capped at 100 MB (ImageKit free-plan limit). The returned `url` is saved to Firestore. Next.js image config allows `ik.imagekit.io` for new uploads, plus `res.cloudinary.com` and `raw.githubusercontent.com` for legacy media (Cloudinary URLs are valid only until that account deactivates).
 
-`scripts/migrate_to_cloudinary.mjs` is a one-time, idempotent migration that re-uploads any `classes` doc still pointing at `raw.githubusercontent.com` to Cloudinary (via remote-fetch) and rewrites the Firestore URL. Run: `node --env-file=.env scripts/migrate_to_cloudinary.mjs` (prompts for admin email/password).
+`scripts/migrate_to_imagekit.mjs` is a one-time, idempotent migration that re-uploads any `classes` doc still pointing at `res.cloudinary.com` to ImageKit (ImageKit's server SDK fetches the remote URL itself) and rewrites the Firestore URL. Run **before** the Cloudinary account deactivates: `node --env-file=.env scripts/migrate_to_imagekit.mjs` (prompts for admin email/password). The older `scripts/migrate_to_cloudinary.mjs` (GitHub → Cloudinary) is kept for reference.
 
 **Route structure:**
 - `/(main)/` — public home (Hero carousel)
@@ -38,6 +38,7 @@ No test framework is configured.
 Required (not committed):
 - `NEXT_PUBLIC_FIREBASE_*` — Firebase project config
 - `NEXT_PUBLIC_FIREBASE_APP_CHECK` — reCAPTCHA v3 site key
-- `NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME` — Cloudinary cloud name (for browser uploads)
-- `NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET` — Cloudinary unsigned upload preset name
+- `NEXT_PUBLIC_IMAGEKIT_PUBLIC_KEY` — ImageKit public key (browser-safe)
+- `NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT` — ImageKit URL endpoint, e.g. `https://ik.imagekit.io/<id>` (browser-safe)
+- `IMAGEKIT_PRIVATE_KEY` — ImageKit private key (**server-only**, used by `/api/upload-auth` and the migration script — never expose client-side)
 - `DOMAIN` — Base URL used in SEO/structured data metadata
