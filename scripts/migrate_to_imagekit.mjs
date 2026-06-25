@@ -68,7 +68,7 @@ async function signIn(email, password) {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password, returnSecureToken: true }),
-    }
+    },
   );
   const data = await res.json();
   if (!res.ok) {
@@ -93,7 +93,7 @@ async function listClasses(idToken) {
     const data = await res.json();
     if (!res.ok) {
       throw new Error(
-        `List classes failed: ${data.error?.message || res.statusText}`
+        `List classes failed: ${data.error?.message || res.statusText}`,
       );
     }
     for (const doc of data.documents || []) docs.push(doc);
@@ -116,7 +116,7 @@ async function patchFields(idToken, id, fields) {
   }
   const body = {
     fields: Object.fromEntries(
-      Object.entries(fields).map(([k, v]) => [k, { stringValue: v }])
+      Object.entries(fields).map(([k, v]) => [k, { stringValue: v }]),
     ),
   };
   const res = await fetch(url, {
@@ -166,7 +166,7 @@ async function main() {
     !PROJECT_ID
   ) {
     throw new Error(
-      "Missing env vars. Run with: node --env-file=.env scripts/migrate_to_imagekit.mjs"
+      "Missing env vars. Run with: node --env-file=.env scripts/migrate_to_imagekit.mjs",
     );
   }
 
@@ -216,7 +216,7 @@ async function main() {
   }
 
   console.log(
-    `\nDone. migrated=${migrated} skipped=${skipped} failed=${failures.length}`
+    `\nDone. migrated=${migrated} skipped=${skipped} failed=${failures.length}`,
   );
   if (failures.length > 0) {
     console.log("\nFailures (re-run to retry):");
