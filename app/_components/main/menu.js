@@ -1,11 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import discount from "@/public/icons/discount.png";
 import home from "@/public/icons/home.png";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import Pricing from "@/app/_components/main/pricing";
 import ViewClass from "@/app/_components/main/view_class";
 import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
 import { db } from "@/app/_components/backend/config";
@@ -17,7 +15,6 @@ import { truncate } from "@/app/_utils/truncate";
 const Menu = () => {
   const [selected, setSelected] = useState("gravity");
   const [selectedClass, setSelectedClass] = useState(null);
-  const [openPricing, setOpenPricing] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [classes, setClasses] = useState([]);
 
@@ -88,19 +85,6 @@ const Menu = () => {
           </ul>
 
           <div className="menu-nav-pricing-home">
-            <div className="menu-nav-pricing me-4">
-              <Image
-                src={discount}
-                width={28}
-                priority
-                alt="icon"
-                className="me-2"
-              />
-              <Link href="#" onClick={() => setOpenPricing(true)}>
-                Pricing
-              </Link>
-            </div>
-
             <div className="menu-nav-home">
               <Link href="/" scroll={false}>
                 <Image src={home} width={28} priority alt="home" />
@@ -243,13 +227,6 @@ const Menu = () => {
           )}
         </section>
       </main>
-
-      {openPricing && (
-        <Pricing
-          openPricing={openPricing}
-          onHide={() => setOpenPricing(null)}
-        />
-      )}
 
       {selectedClass && (
         <ViewClass

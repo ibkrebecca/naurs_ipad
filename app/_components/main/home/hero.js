@@ -113,23 +113,9 @@ const Hero = () => {
 
             <div className="hero_title">
               <h1>{capitalize(onGetSlide(slide).name)}</h1>
-              <p>
-                Starting from{" "}
-                {onGetSlide(slide).category.id === "adult" && (
-                  <>
-                    {onGetSlide(slide).subcategory.id === "gravity" && "80 "}
-                    {onGetSlide(slide).subcategory.id === "sky" && "125 "}
-                    AED
-                  </>
-                )}
-                {onGetSlide(slide).category.id === "kids" && (
-                  <>
-                    {onGetSlide(slide).subcategory.id === "fine_art" && "425 "}
-                    {onGetSlide(slide).subcategory.id === "fitness" && "360 "}
-                    AED
-                  </>
-                )}
-              </p>
+              {onGetSlide(slide).startingPrice != null && (
+                <p>Starting from {onGetSlide(slide).startingPrice} AED</p>
+              )}
             </div>
           </div>
 

@@ -2,6 +2,7 @@
 
 import { upload } from "@imagekit/next";
 import { auth } from "@/app/_components/backend/config";
+import compressVideo from "@/app/_utils/compress_video";
 
 // Free-plan cap for a single video upload.
 const MAX_VIDEO_SIZE_MB = 100;
@@ -60,18 +61,33 @@ const getUploadAuth = async () => {
  * browser → ImageKit directly, bypassing the Vercel serverless 4.5 MB body limit.
  *
  * @param {File} file
- * @param {{ resourceType?: "image" | "video", maxImageWidth?: number, onProgress?: (pct: number) => void }} opts
+ * @param {{ resourceType?: "image" | "video", maxImageWidth?: number, onProgress?: (pct: number) => void, onCompressProgress?: (pct: number) => void }} opts
  * @returns {Promise<string>} the url of the uploaded asset
  */
 const uploadToImageKit = async (
   file,
-  { resourceType = "image", maxImageWidth = 800, onProgress } = {}
+  {
+    resourceType = "image",
+    maxImageWidth = 800,
+    onProgress,
+    onCompressProgress,
+  } = {}
 ) => {
   let upload_ = file;
   let fileName = file.name;
 
   if (resourceType === "video") {
-    const sizeMB = file.size / (1024 * 1024);
+    // Compress in the browser first so the stored file stays small. If
+    // compression fails (e.g. wasm/CDN issue), fall back to the original so
+    // the upload isn't fully blocked.
+    try {
+      upload_ = await compressVideo(file, { onProgress: onCompressProgress });
+    } catch {
+      upload_ = file;
+    }
+    fileName = upload_.name;
+
+    const sizeMB = upload_.size / (1024 * 1024);
     if (sizeMB > MAX_VIDEO_SIZE_MB) {
       throw new Error(
         `Video is too large (${sizeMB.toFixed(

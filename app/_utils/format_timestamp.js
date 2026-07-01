@@ -3,7 +3,6 @@ import { Timestamp } from "firebase/firestore";
 export const formatTimestamp = (timestamp) => {
   let date;
 
-  // Check if the input is a string
   if (typeof timestamp === "string") {
     date = new Date(timestamp);
   } else if (timestamp instanceof Timestamp) {

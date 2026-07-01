@@ -21,6 +21,7 @@ import { selectFormStyle, selectFormTheme } from "@/app/_utils/input_style";
 import Image from "next/image";
 import { toast } from "react-toastify";
 import uploadToImageKit from "@/app/_utils/upload_to_imagekit";
+import PricingEditor from "@/app/_components/main/admin/pricing_editor";
 
 const EditClass = ({ selectedClass, onHide }) => {
   const [show, setShow] = useState(!!selectedClass);
@@ -36,13 +37,19 @@ const EditClass = ({ selectedClass, onHide }) => {
   const [subCategory, setSubCategory] = useState(selectedClass.subcategory);
   const [name, setName] = useState("");
   const [calendar, setCalendar] = useState("");
+  const [startingPrice, setStartingPrice] = useState(
+    selectedClass.startingPrice ?? "",
+  );
+  const [pricingTables, setPricingTables] = useState(
+    selectedClass.pricingTables ?? [],
+  );
   const [uploadProgress, setUploadProgress] = useState(null);
   const [uploadLabel, setUploadLabel] = useState("");
 
   useEffect(() => {
     const unsubscribe = onSnapshot(
       query(collection(db, "categories"), orderBy("createdOn", "desc")),
-      (snap) => setCategories(snap.docs.map((doc) => doc.data()))
+      (snap) => setCategories(snap.docs.map((doc) => doc.data())),
     );
 
     return () => unsubscribe();
@@ -61,6 +68,8 @@ const EditClass = ({ selectedClass, onHide }) => {
         video: viewVideo,
         name: name.length <= 0 ? selectedClass.name : name,
         calendar: calendar.length <= 0 ? selectedClass.calendar : calendar,
+        startingPrice: startingPrice === "" ? null : Number(startingPrice),
+        pricingTables,
         category: category?.value || selectedClass.category,
         subcategory: subCategory?.value || selectedClass.subcategory,
       };
@@ -76,11 +85,15 @@ const EditClass = ({ selectedClass, onHide }) => {
       }
 
       if (rawVideo) {
-        setUploadLabel("Video");
+        setUploadLabel("Compressing Video");
         setUploadProgress(0);
         updateClass_.video = await uploadToImageKit(rawVideo, {
           resourceType: "video",
-          onProgress: (pct) => setUploadProgress(pct),
+          onCompressProgress: (pct) => setUploadProgress(pct),
+          onProgress: (pct) => {
+            setUploadLabel("Video");
+            setUploadProgress(pct);
+          },
         });
         setUploadProgress(null);
       }
@@ -91,7 +104,6 @@ const EditClass = ({ selectedClass, onHide }) => {
       handleClose();
       toast.dark("Class updated successfully");
     } catch (err) {
-      // keep the modal open with state intact so the user can retry
       toast.error(`${err.message || err}`, { className: "text-danger" });
     } finally {
       setIsLoading(false);
@@ -122,6 +134,7 @@ const EditClass = ({ selectedClass, onHide }) => {
 
   return (
     <Modal
+      size="lg"
       scrollable
       centered
       backdrop="static"
@@ -170,6 +183,22 @@ const EditClass = ({ selectedClass, onHide }) => {
                   placeholder={capitalize(selectedClass.calendar ?? "")}
                   defaultValue={capitalize(selectedClass.calendar ?? "")}
                   onChange={(e) => setCalendar(e.target.value)}
+                />
+              </div>
+
+              <div className="mb-3">
+                <label className="form-label" htmlFor="startingPrice">
+                  Starting Price in AED (optional)
+                </label>
+
+                <input
+                  type="number"
+                  min="0"
+                  className="form-control cus-form-control"
+                  id="startingPrice"
+                  placeholder="80"
+                  value={startingPrice}
+                  onChange={(e) => setStartingPrice(e.target.value)}
                 />
               </div>
 
@@ -315,6 +344,11 @@ const EditClass = ({ selectedClass, onHide }) => {
                   </div>
                 </div>
               </div>
+
+              <PricingEditor
+                value={pricingTables}
+                onChange={setPricingTables}
+              />
             </div>
           </form>
         </div>

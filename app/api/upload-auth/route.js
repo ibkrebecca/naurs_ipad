@@ -7,7 +7,6 @@ const PRIVATE_KEY = process.env.IMAGEKIT_PRIVATE_KEY;
 
 const FIRESTORE_BASE = `https://firestore.googleapis.com/v1/projects/${PROJECT_ID}/databases/(default)/documents`;
 
-// Verify a Firebase ID token and return the trusted email, or null.
 async function emailFromIdToken(idToken) {
   const res = await fetch(
     `https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=${API_KEY}`,
@@ -15,25 +14,27 @@ async function emailFromIdToken(idToken) {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ idToken }),
-    }
+    },
   );
   if (!res.ok) return null;
   const data = await res.json();
   return data.users?.[0]?.email ?? null;
 }
 
-// `admins` docs are keyed by email — confirm the doc exists.
 async function isAdmin(email, idToken) {
   const res = await fetch(
     `${FIRESTORE_BASE}/admins/${encodeURIComponent(email)}`,
-    { headers: { Authorization: `Bearer ${idToken}` } }
+    { headers: { Authorization: `Bearer ${idToken}` } },
   );
   return res.ok;
 }
 
 export async function POST(req) {
   if (!PRIVATE_KEY || !PUBLIC_KEY) {
-    return Response.json({ error: "ImageKit is not configured." }, { status: 500 });
+    return Response.json(
+      { error: "ImageKit is not configured." },
+      { status: 500 },
+    );
   }
 
   const auth = req.headers.get("authorization") || "";

@@ -1033,6 +1033,32 @@ b {
   color: #f60e73 !important;
 }
 
+/* pricing tables (user-facing) */
+.pricing-table {
+  background: #ffffff;
+  border-radius: 32px;
+  overflow: hidden;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.pricing-table th,
+.pricing-table td {
+  padding: 16px 20px;
+  vertical-align: middle;
+  border-color: #eaeaea;
+}
+
+.pricing-table thead th {
+  font-weight: 700;
+  font-size: 18px;
+  border-bottom: 1px solid #eaeaea;
+}
+
+.pricing-table tbody td {
+  font-size: 18px;
+}
+
 /* class card */
 .class-card {
   position: relative;

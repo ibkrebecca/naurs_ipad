@@ -20,6 +20,7 @@ import { selectFormStyle, selectFormTheme } from "@/app/_utils/input_style";
 import { db } from "@/app/_components/backend/config";
 import ReactSelect from "react-select";
 import capitalize from "@/app/_utils/capitalize";
+import PricingEditor from "@/app/_components/main/admin/pricing_editor";
 
 const NewClass = ({ newClass, onHide }) => {
   const [show, setShow] = useState(!!newClass);
@@ -34,6 +35,8 @@ const NewClass = ({ newClass, onHide }) => {
   const [subCategory, setSubCategory] = useState(null);
   const [name, setName] = useState("");
   const [calendar, setCalendar] = useState("");
+  const [startingPrice, setStartingPrice] = useState("");
+  const [pricingTables, setPricingTables] = useState([]);
   const [uploadProgress, setUploadProgress] = useState(null);
   const [uploadLabel, setUploadLabel] = useState("");
 
@@ -72,11 +75,15 @@ const NewClass = ({ newClass, onHide }) => {
 
       let video = null;
       if (rawVideo) {
-        setUploadLabel("Video");
+        setUploadLabel("Compressing Video");
         setUploadProgress(0);
         video = await uploadToImageKit(rawVideo, {
           resourceType: "video",
-          onProgress: (pct) => setUploadProgress(pct),
+          onCompressProgress: (pct) => setUploadProgress(pct),
+          onProgress: (pct) => {
+            setUploadLabel("Video");
+            setUploadProgress(pct);
+          },
         });
         setUploadProgress(null);
       }
@@ -87,6 +94,8 @@ const NewClass = ({ newClass, onHide }) => {
         video,
         name,
         calendar: calendar.length <= 0 ? null : calendar,
+        startingPrice: startingPrice === "" ? null : Number(startingPrice),
+        pricingTables,
         category: category.value,
         subcategory: subCategory.value,
         createdOn: serverTimestamp(),
@@ -95,6 +104,8 @@ const NewClass = ({ newClass, onHide }) => {
       formRef.current?.reset();
       setName("");
       setCalendar("");
+      setStartingPrice("");
+      setPricingTables([]);
       setCategory(null);
       setSubCategory(null);
       setRawImage(null);
@@ -104,7 +115,6 @@ const NewClass = ({ newClass, onHide }) => {
       handleClose();
       toast.dark("Class added successfully");
     } catch (err) {
-      // keep the modal open with state intact so the user can retry
       toast.error(`${err.message || err}`, { className: "text-danger" });
     } finally {
       setIsLoading(false);
@@ -118,6 +128,7 @@ const NewClass = ({ newClass, onHide }) => {
 
   return (
     <Modal
+      size="lg"
       scrollable
       centered
       backdrop="static"
@@ -163,6 +174,22 @@ const NewClass = ({ newClass, onHide }) => {
                   id="calendar"
                   placeholder="Fri 6:00pm - 7:00pm"
                   onChange={(e) => setCalendar(e.target.value)}
+                />
+              </div>
+
+              <div className="mb-3">
+                <label className="form-label" htmlFor="startingPrice">
+                  Starting Price in AED (optional)
+                </label>
+
+                <input
+                  type="number"
+                  min="0"
+                  className="form-control cus-form-control"
+                  id="startingPrice"
+                  placeholder="80"
+                  value={startingPrice}
+                  onChange={(e) => setStartingPrice(e.target.value)}
                 />
               </div>
 
@@ -305,6 +332,11 @@ const NewClass = ({ newClass, onHide }) => {
                   </div>
                 </div>
               </div>
+
+              <PricingEditor
+                value={pricingTables}
+                onChange={setPricingTables}
+              />
             </div>
           </form>
         </div>
