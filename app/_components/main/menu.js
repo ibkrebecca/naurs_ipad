@@ -11,6 +11,7 @@ import Loader from "@/app/_components/loader";
 import { Trash } from "iconsax-react";
 import capitalize from "@/app/_utils/capitalize";
 import { truncate } from "@/app/_utils/truncate";
+import useIdleRedirect from "@/app/_hooks/use_idle_redirect";
 
 const Menu = () => {
   const [selected, setSelected] = useState("gravity");
@@ -18,13 +19,15 @@ const Menu = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [classes, setClasses] = useState([]);
 
+  useIdleRedirect(90_000, "/");
+
   useEffect(() => {
     const unsubscribe = onSnapshot(
       query(collection(db, "classes"), orderBy("createdOn", "desc")),
       (snap) => {
         setIsLoading(false);
         setClasses(snap.docs.map((doc) => doc.data()));
-      }
+      },
     );
 
     return () => unsubscribe();
