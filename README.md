@@ -1,1 +1,1 @@
-# Naurs iPad Web Application!
+# Naurs iPad web application!
