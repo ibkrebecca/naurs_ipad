@@ -72,7 +72,7 @@ const PricingEditor = ({ value, onChange }) => {
       <label className="form-label">Pricing (optional)</label>
 
       {tables.map((t, ti) => (
-        <div key={ti} className="border rounded p-3 mb-3 bg-white">
+        <div key={ti} className="border rounded-24 p-3 mb-3 bg-white">
           <div className="d-flex align-items-center mb-3">
             <input
               type="text"
@@ -152,7 +152,7 @@ const PricingEditor = ({ value, onChange }) => {
           <div className="d-flex">
             <button
               type="button"
-              className="btn btn-sm btn-outline-dark me-2"
+              className="btn btn-outline-dark me-2"
               onClick={() => addColumn(ti)}
             >
               <AddSquare size={16} color="black" /> Column
@@ -160,7 +160,7 @@ const PricingEditor = ({ value, onChange }) => {
 
             <button
               type="button"
-              className="btn btn-sm btn-outline-dark"
+              className="btn btn-outline-dark"
               onClick={() => addRow(ti)}
             >
               <AddSquare size={16} color="black" /> Row
