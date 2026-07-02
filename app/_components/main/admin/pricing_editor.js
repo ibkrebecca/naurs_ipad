@@ -29,7 +29,7 @@ const PricingEditor = ({ value, onChange }) => {
     const t = tables[ti];
     updateTable(ti, {
       ...t,
-      columns: [...t.columns, `Column ${t.columns.length + 1}`],
+      columns: [...t.columns, ""],
       rows: t.rows.map((r) => ({ cells: [...r.cells, ""] })),
     });
   };
