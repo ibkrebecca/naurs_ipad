@@ -28,7 +28,7 @@ const PricingTables = ({ tables }) => {
             {table?.title && <h5 className="fw-normal mb-3">{table.title}</h5>}
 
             <div className="table-responsive">
-              <table className="table align-middle text-center pricing-table mb-0">
+              <table className="table align-middle text-start pricing-table mb-0">
                 <thead>
                   <tr>
                     {columns.map((col, ci) => (
