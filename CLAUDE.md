@@ -21,9 +21,11 @@ No test framework is configured.
 
 **Data:** Firestore with `onSnapshot()` real-time listeners — no polling, no Redux/Zustand. Three collections: `classes`, `categories`, `admins`.
 
-**File uploads:** `app/_utils/upload_to_imagekit.js` uploads media **directly from the browser** to ImageKit. Unlike Cloudinary, ImageKit has no unsigned upload, so the browser first calls the admin-gated route `app/api/upload-auth/route.js` to get short-lived `signature`/`token`/`expire` params, then POSTs the file **browser → ImageKit directly** (via `@imagekit/next`'s `upload()`). Only the tiny auth request hits the server, so Vercel's 4.5 MB serverless body limit is still bypassed. The auth route verifies the caller's Firebase ID token and confirms the email exists in the `admins` collection before issuing params. Images are first compressed/resized via the Canvas API; videos are capped at 100 MB (ImageKit free-plan limit). The returned `url` is saved to Firestore. Next.js image config allows `ik.imagekit.io` for new uploads, plus `res.cloudinary.com` and `raw.githubusercontent.com` for legacy media (Cloudinary URLs are valid only until that account deactivates).
+**File uploads:** `app/_utils/upload_to_firebase.js` uploads media **directly from the browser** to Firebase Storage via `uploadBytesResumable()`, then saves the `getDownloadURL()` result to Firestore. Uploads are authorized by the caller's Firebase Auth session against `storage.rules` (public reads; writes only if the signed-in user's email has a doc in the `admins` collection) — there is no server signing route. Because the bytes go browser → Storage directly, there is no serverless body-size limit to worry about. Images are first compressed/resized via the Canvas API (to PNG); videos are compressed in-browser with ffmpeg.wasm (`app/_utils/compress_video.js`) and capped at 100 MB. Next.js image config (`next.config.mjs`) allows `firebasestorage.googleapis.com` for the admin `next/image` previews. Storage security rules live in `storage.rules` and are deployed via the Firebase Console (Storage → Rules).
 
-`scripts/migrate_to_imagekit.mjs` is a one-time, idempotent migration that re-uploads any `classes` doc still pointing at `res.cloudinary.com` to ImageKit (ImageKit's server SDK fetches the remote URL itself) and rewrites the Firestore URL. Run **before** the Cloudinary account deactivates: `node --env-file=.env scripts/migrate_to_imagekit.mjs` (prompts for admin email/password). The older `scripts/migrate_to_cloudinary.mjs` (GitHub → Cloudinary) is kept for reference.
+`scripts/migrate_to_firebase_storage.mjs` is a one-time, idempotent migration that downloads any `classes` media still pointing at ImageKit/Cloudinary/GitHub, re-uploads the bytes to Firebase Storage (all via Firebase REST APIs — the JS SDK fails under Node), and rewrites the Firestore URL. Docs already on `firebasestorage.googleapis.com` are skipped, so it is safe to re-run: `node --env-file=.env scripts/migrate_to_firebase_storage.mjs` (prompts for admin email/password). Run it with Storage App Check enforcement OFF (Node has no App Check token).
+
+`scripts/recover_media_to_firebase.mjs` was the actual migration used, because by then the ImageKit account was over its 20 GB monthly bandwidth (every `ik.imagekit.io` URL returns 429) and the older Cloudinary account was deactivated (401) — so the live media could not be fetched from either remote. Instead it recovers the **originals preserved in git history** under `livefiles/images` and `livefiles/videos` (each ImageKit filename is `<livefiles-basename>_<cloudinary-suffix>_<imagekit-suffix>.<ext>`, matched by longest prefix), plus any base64 `data:` URLs inlined in Firestore, uploading those to Firebase Storage. Anything with no recoverable original (browser `blob_*` images, June-2026 direct-upload videos) is left untouched and listed in the generated `MEDIA_RECOVERY.md` for manual re-upload through the admin dashboard. Both scripts accept `ADMIN_EMAIL`/`ADMIN_PASSWORD` env vars as a non-interactive alternative to the prompts.
 
 **Route structure:**
 - `/(main)/` — public home (Hero carousel)
@@ -36,9 +38,6 @@ No test framework is configured.
 ## Environment Variables
 
 Required (not committed):
-- `NEXT_PUBLIC_FIREBASE_*` — Firebase project config
+- `NEXT_PUBLIC_FIREBASE_*` — Firebase project config (incl. `NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET`, used for uploads)
 - `NEXT_PUBLIC_FIREBASE_APP_CHECK` — reCAPTCHA v3 site key
-- `NEXT_PUBLIC_IMAGEKIT_PUBLIC_KEY` — ImageKit public key (browser-safe)
-- `NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT` — ImageKit URL endpoint, e.g. `https://ik.imagekit.io/<id>` (browser-safe)
-- `IMAGEKIT_PRIVATE_KEY` — ImageKit private key (**server-only**, used by `/api/upload-auth` and the migration script — never expose client-side)
 - `DOMAIN` — Base URL used in SEO/structured data metadata

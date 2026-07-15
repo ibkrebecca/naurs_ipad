@@ -20,7 +20,7 @@ import ReactSelect from "react-select";
 import { selectFormStyle, selectFormTheme } from "@/app/_utils/input_style";
 import Image from "next/image";
 import { toast } from "react-toastify";
-import uploadToImageKit from "@/app/_utils/upload_to_imagekit";
+import uploadToFirebase from "@/app/_utils/upload_to_firebase";
 import PricingEditor from "@/app/_components/main/admin/pricing_editor";
 
 const EditClass = ({ selectedClass, onHide }) => {
@@ -77,7 +77,7 @@ const EditClass = ({ selectedClass, onHide }) => {
       if (rawImage) {
         setUploadLabel("Image");
         setUploadProgress(0);
-        updateClass_.image = await uploadToImageKit(rawImage, {
+        updateClass_.image = await uploadToFirebase(rawImage, {
           resourceType: "image",
           onProgress: (pct) => setUploadProgress(pct),
         });
@@ -87,7 +87,7 @@ const EditClass = ({ selectedClass, onHide }) => {
       if (rawVideo) {
         setUploadLabel("Compressing Video");
         setUploadProgress(0);
-        updateClass_.video = await uploadToImageKit(rawVideo, {
+        updateClass_.video = await uploadToFirebase(rawVideo, {
           resourceType: "video",
           onCompressProgress: (pct) => setUploadProgress(pct),
           onProgress: (pct) => {

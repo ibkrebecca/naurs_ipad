@@ -6,7 +6,7 @@ import { Modal } from "react-bootstrap";
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { toast } from "react-toastify";
-import uploadToImageKit from "@/app/_utils/upload_to_imagekit";
+import uploadToFirebase from "@/app/_utils/upload_to_firebase";
 import {
   collection,
   doc,
@@ -67,7 +67,7 @@ const NewClass = ({ newClass, onHide }) => {
 
       setUploadLabel("Image");
       setUploadProgress(0);
-      const image = await uploadToImageKit(rawImage, {
+      const image = await uploadToFirebase(rawImage, {
         resourceType: "image",
         onProgress: (pct) => setUploadProgress(pct),
       });
@@ -77,7 +77,7 @@ const NewClass = ({ newClass, onHide }) => {
       if (rawVideo) {
         setUploadLabel("Compressing Video");
         setUploadProgress(0);
-        video = await uploadToImageKit(rawVideo, {
+        video = await uploadToFirebase(rawVideo, {
           resourceType: "video",
           onCompressProgress: (pct) => setUploadProgress(pct),
           onProgress: (pct) => {

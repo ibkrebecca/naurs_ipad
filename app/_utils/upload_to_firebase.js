@@ -1,10 +1,10 @@
 "use client";
 
-import { upload } from "@imagekit/next";
-import { auth } from "@/app/_components/backend/config";
+import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import { auth, storage } from "@/app/_components/backend/config";
 import compressVideo from "@/app/_utils/compress_video";
 
-// Free-plan cap for a single video upload.
+// Keep videos small enough to stay comfortably within the Storage bucket.
 const MAX_VIDEO_SIZE_MB = 100;
 
 // compress/resize an image with the Canvas API before upload
@@ -34,37 +34,17 @@ const compressImage = (file, maxWidth) =>
     reader.readAsDataURL(file);
   });
 
-// Fetch short-lived signed upload params from our admin-gated API route.
-// The file itself never passes through the server — only this small request.
-const getUploadAuth = async () => {
-  const idToken = await auth.currentUser?.getIdToken();
-  if (!idToken) {
-    throw new Error("You must be signed in to upload.");
-  }
-
-  const res = await fetch("/api/upload-auth", {
-    method: "POST",
-    headers: { Authorization: `Bearer ${idToken}` },
-  });
-
-  if (!res.ok) {
-    const data = await res.json().catch(() => ({}));
-    throw new Error(data.error || "Could not authorize upload.");
-  }
-
-  return res.json();
-};
-
 /**
- * Upload a file directly from the browser to ImageKit.
- * The signed params come from /api/upload-auth, but the file bytes go
- * browser → ImageKit directly, bypassing the Vercel serverless 4.5 MB body limit.
+ * Upload a file directly from the browser to Firebase Storage.
+ * The upload is authorized by the caller's Firebase Auth session against the
+ * Storage security rules (admins only), and the bytes go browser → Storage
+ * directly, so there is no serverless body-size limit to worry about.
  *
  * @param {File} file
  * @param {{ resourceType?: "image" | "video", maxImageWidth?: number, onProgress?: (pct: number) => void, onCompressProgress?: (pct: number) => void }} opts
- * @returns {Promise<string>} the url of the uploaded asset
+ * @returns {Promise<string>} the download url of the uploaded asset
  */
-const uploadToImageKit = async (
+const uploadToFirebase = async (
   file,
   {
     resourceType = "image",
@@ -73,8 +53,13 @@ const uploadToImageKit = async (
     onCompressProgress,
   } = {}
 ) => {
+  if (!auth.currentUser) {
+    throw new Error("You must be signed in to upload.");
+  }
+
   let upload_ = file;
   let fileName = file.name;
+  let contentType = file.type;
 
   if (resourceType === "video") {
     // Compress in the browser first so the stored file stays small. If
@@ -86,6 +71,7 @@ const uploadToImageKit = async (
       upload_ = file;
     }
     fileName = upload_.name;
+    contentType = upload_.type || "video/mp4";
 
     const sizeMB = upload_.size / (1024 * 1024);
     if (sizeMB > MAX_VIDEO_SIZE_MB) {
@@ -98,25 +84,32 @@ const uploadToImageKit = async (
   } else {
     upload_ = await compressImage(file, maxImageWidth);
     fileName = `${(file.name || "image").replace(/\.[^.]+$/, "")}.png`;
+    contentType = "image/png";
   }
 
-  const { token, expire, signature, publicKey } = await getUploadAuth();
-
-  const res = await upload({
-    file: upload_,
-    fileName,
-    token,
-    expire,
-    signature,
-    publicKey,
-    onProgress: (e) => {
-      if (onProgress && e.total) {
-        onProgress(Math.round((e.loaded / e.total) * 100));
-      }
-    },
+  const path = `classes/${resourceType}s/${Date.now()}-${fileName}`;
+  const task = uploadBytesResumable(ref(storage, path), upload_, {
+    contentType,
   });
 
-  return res.url;
+  await new Promise((resolve, reject) => {
+    task.on(
+      "state_changed",
+      (snapshot) => {
+        if (onProgress && snapshot.totalBytes) {
+          onProgress(
+            Math.round(
+              (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+            )
+          );
+        }
+      },
+      reject,
+      resolve
+    );
+  });
+
+  return getDownloadURL(task.snapshot.ref);
 };
 
-export default uploadToImageKit;
+export default uploadToFirebase;

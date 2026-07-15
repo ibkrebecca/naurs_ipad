@@ -3,9 +3,7 @@
 // Client-side video compression with ffmpeg.wasm (single-thread).
 //
 // We transcode in the browser BEFORE uploading so the stored file stays
-// small — ImageKit's free plan has limited storage and its own video
-// transformations consume metered "video processing units", so shrinking
-// here is what actually keeps us on the free tier.
+// small — this keeps Firebase Storage usage (and bandwidth on playback) down.
 //
 // Single-thread ffmpeg.wasm does not use SharedArrayBuffer, so no COOP/COEP
 // headers (and no Next.js server changes) are required. The ~30 MB core is
